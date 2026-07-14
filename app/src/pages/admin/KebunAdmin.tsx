@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../../lib/supabase'
+import BackButton from '@/components/ui/backButton'
 
 interface Kebun {
   id: string
@@ -48,6 +49,7 @@ export default function KebunAdmin() {
   return (
     <div className="min-h-screen bg-[#FCFAF8] p-6 md:p-12 relative">
       
+
       {/* Modal Konfirmasi Hapus */}
       {deleteModalId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
@@ -75,6 +77,9 @@ export default function KebunAdmin() {
       )}
 
       <div className="max-w-[1000px] mx-auto">
+
+      <BackButton />
+        
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
           <div>

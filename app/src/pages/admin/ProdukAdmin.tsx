@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../../lib/supabase'
+import BackButton from '@/components/ui/backButton'
 
 interface Variant {
   id: string
@@ -81,6 +82,7 @@ export default function ProdukAdmin() {
       )}
 
       <div className="max-w-[1000px] mx-auto">
+        <BackButton />
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
           <div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { supabase } from '../../lib/supabase'
+import BackButton from '@/components/ui/backButton'
 
 interface VariantInput {
   id?: string  // ada id kalau varian lama, kosong kalau baru ditambah
@@ -130,6 +131,7 @@ export default function ProdukEdit() {
 
   return (
     <div className="min-h-screen bg-[#F7F3EE] p-10">
+      <BackButton />
       <h1 className="font-['Playfair_Display'] text-[28px] font-bold text-[#5C3D2E] mb-6">
         Edit Produk
       </h1>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import BackButton from '@/components/ui/backButton'
 
 interface GalleryImage {
   id: string
@@ -111,7 +112,10 @@ export default function GaleriAdmin() {
         </div>
       )}
 
-      <div className="max-w-[1200px] mx-auto">
+    <div className="max-w-[1200px] mx-auto">
+        
+        <BackButton />
+
         <header className="mb-10">
           <h1 className="font-['Playfair_Display'] text-[36px] font-bold text-[#3A261D]">
             Kelola Galeri
