@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { sanitizeFileName } from '../../lib/utils'
-import BackButton from '@/components/ui/backButton'
+import BackButton from '@/components/ui/BackButton'
 
 interface KebunGalleryImage {
   id: string

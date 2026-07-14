@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { supabase } from '../../lib/supabase'
-import BackButton from '@/components/ui/backButton'
+import BackButton from '@/components/ui/BackButton'
 
 export default function KebunForm() {
   const { id } = useParams()  // ada isinya kalau mode Edit, undefined kalau mode Tambah
