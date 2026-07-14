@@ -1,4 +1,4 @@
-import { useEffect} from 'react'
+import { useLayoutEffect } from 'react'
 import { Flame, Settings, Package, GraduationCap } from 'lucide-react'
 import Navigation from '../components/Navigation'
 import Footer from '../components/Footer'
@@ -6,11 +6,13 @@ import PageHero from '../components/PageHero'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 
 export default function Roastery() {
-  const contentRef = useScrollAnimation()
-
-  useEffect(() => {
+  // 1. Gunakan useLayoutEffect dan letakkan di ATAS hook animasi
+  // Ini memaksa scroll ke atas terjadi SEBELUM GSAP mengkalkulasi kordinat elemen.
+  useLayoutEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  const contentRef = useScrollAnimation()
 
   const features = [
     {
@@ -85,7 +87,8 @@ export default function Roastery() {
               {features.map((f) => (
                 <div
                   key={f.title}
-                  className="bg-[#F7F3EE] rounded-xl p-10 hover:shadow-[0_8px_32px_rgba(44,24,16,0.12)] transition-all duration-300"
+                  // 2. Ganti transition-all menjadi transition-shadow agar tidak bentrok dengan GSAP
+                  className="bg-[#F7F3EE] rounded-xl p-10 hover:shadow-[0_8px_32px_rgba(44,24,16,0.12)] transition-shadow duration-300"
                 >
                   <f.icon size={40} className="text-[#4A7C59] mb-5" strokeWidth={1.5} />
                   <h4 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
@@ -111,7 +114,7 @@ export default function Roastery() {
             </p>
             <a
               href="#kebutuhan"
-              className="inline-block mt-8 border-2 border-[rgba(255,255,255,0.5)] text-white text-[14px] font-semibold uppercase tracking-[0.04em] px-8 py-3.5 rounded-full hover:border-white hover:bg-[rgba(255,255,255,0.1)] transition-all duration-200"
+              className="inline-block mt-8 border-2 border-[rgba(255,255,255,0.5)] text-white text-[14px] font-semibold uppercase tracking-[0.04em] px-8 py-3.5 rounded-full hover:border-white hover:bg-[rgba(255,255,255,0.1)] transition-colors duration-200"
             >
               Lihat Kebutuhan Peralatan &rarr;
             </a>
