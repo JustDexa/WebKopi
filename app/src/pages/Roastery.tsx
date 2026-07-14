@@ -91,9 +91,9 @@ export default function Roastery() {
                   className="bg-[#F7F3EE] rounded-xl p-10 hover:shadow-[0_8px_32px_rgba(44,24,16,0.12)] transition-shadow duration-300"
                 >
                   <f.icon size={40} className="text-[#4A7C59] mb-5" strokeWidth={1.5} />
-                  <h4 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
+                  <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
                     {f.title}
-                  </h4>
+                  </h3>
                   <p className="mt-2.5 text-[15px] text-[#6B5B4F] leading-relaxed">
                     {f.desc}
                   </p>

@@ -88,9 +88,9 @@ const contentRef = useScrollAnimation()
                   className="bg-[#F7F3EE] rounded-xl p-10 text-center hover:shadow-[0_8px_32px_rgba(44,24,16,0.12)] hover:-translate-y-1.5 transition-shadow duration-300"
                 >
                   <c.icon size={40} className="mx-auto text-[#4A7C59] mb-5" strokeWidth={1.5} />
-                  <h4 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
+                  <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
                     {c.title}
-                  </h4>
+                  </h3>
                   <p className="mt-2.5 text-[15px] text-[#6B5B4F] leading-relaxed">
                     {c.desc}
                   </p>

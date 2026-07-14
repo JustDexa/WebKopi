@@ -201,9 +201,9 @@ export default function Produk() {
                   <div className="w-12 h-12 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center font-['Playfair_Display'] text-[20px] font-bold">
                     {s.num}
                   </div>
-                  <h4 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E] mt-4">
+                  <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E] mt-4">
                     {s.title}
-                  </h4>
+                  </h3>
                   <p className="mt-2 text-[14px] text-[#6B5B4F] leading-relaxed max-w-[200px]">
                     {s.desc}
                   </p>

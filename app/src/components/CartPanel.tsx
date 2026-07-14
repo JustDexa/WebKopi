@@ -40,6 +40,7 @@ export default function CartPanel({ isOpen, onClose }: CartPanelProps) {
           </h2>
           <button 
             onClick={onClose}
+            aria-label="Tutup keranjang"
             className="p-2 hover:bg-[#F7F3EE] rounded-full transition-colors"
           >
             <X size={22} className="text-[#5C3D2E]" />
@@ -61,6 +62,7 @@ export default function CartPanel({ isOpen, onClose }: CartPanelProps) {
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
+                      aria-label={`Kurangi jumlah ${item.productName}`}
                       className="w-6 h-6 flex items-center justify-center border border-[#E8DFD5] rounded hover:bg-[#F7F3EE] transition-colors"
                     >
                       <Minus size={12} />
@@ -68,6 +70,7 @@ export default function CartPanel({ isOpen, onClose }: CartPanelProps) {
                     <span className="text-sm w-6 text-center">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
+                      aria-label={`Tambah jumlah ${item.productName}`}
                       className="w-6 h-6 flex items-center justify-center border border-[#E8DFD5] rounded hover:bg-[#F7F3EE] transition-colors"
                     >
                       <Plus size={12} />
@@ -76,6 +79,7 @@ export default function CartPanel({ isOpen, onClose }: CartPanelProps) {
                 </div>
                 <button 
                   onClick={() => removeItem(item.cartItemId)}
+                  aria-label={`Hapus ${item.productName} dari keranjang`}
                   className="p-1.5 hover:bg-red-50 rounded-md transition-colors"
                 >
                   <Trash2 size={16} className="text-red-500" />

@@ -139,9 +139,9 @@ export default function Home() {
                     className="bg-[#F7F3EE] rounded-xl p-10 text-center hover:shadow-[0_8px_32px_rgba(44,24,16,0.12)] hover:-translate-y-1.5 transition-shadow duration-300"
                   >
                   <f.icon size={48} className="mx-auto text-[#4A7C59] mb-6" strokeWidth={1.5} />
-                  <h4 className="font-['Playfair_Display'] text-[22px] font-semibold text-[#5C3D2E] mb-3">
+                  <h3 className="font-['Playfair_Display'] text-[22px] font-semibold text-[#5C3D2E] mb-3">
                     {f.title}
-                  </h4>
+                  </h3>
                   <p className="text-[15px] text-[#6B5B4F] leading-relaxed">
                     {f.desc}
                   </p>

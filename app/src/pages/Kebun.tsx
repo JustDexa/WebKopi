@@ -229,9 +229,9 @@ export default function Kebun() {
                   >
                     <div className={`flex-1 ${step.side === 'left' ? 'lg:text-right' : 'lg:text-left'}`}>
                       <div className="bg-white rounded-lg p-6 shadow-[0_4px_24px_rgba(44,24,16,0.08)]">
-                        <h4 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
+                        <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
                           {step.title}
-                        </h4>
+                        </h3>
                         <p className="mt-2 text-[15px] text-[#6B5B4F] leading-relaxed">
                           {step.desc}
                         </p>

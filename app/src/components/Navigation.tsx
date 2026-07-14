@@ -69,6 +69,7 @@ export default function Navigation() {
             ))}
                         <button
               onClick={() => setCartOpen(true)}
+              aria-label="Buka keranjang belanja"
               className="relative text-[#5C3D2E] hover:text-[#4A7C59] transition-colors"
             >
               <ShoppingCart size={22} />
@@ -88,7 +89,7 @@ export default function Navigation() {
 
           {/* Mobile Hamburger */}
           <div className="lg:hidden flex items-center gap-4">
-            <button onClick={() => setCartOpen(true)} className="relative text-[#5C3D2E]">
+            <button onClick={() => setCartOpen(true)} aria-label="Buka keranjang belanja" className="relative text-[#5C3D2E]">
               <ShoppingCart size={22} />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[#4A7C59] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
@@ -96,7 +97,7 @@ export default function Navigation() {
                 </span>
               )}
             </button>
-            <button className="text-[#5C3D2E]" onClick={() => setMobileOpen(true)}>
+            <button className="text-[#5C3D2E]" aria-label="Buka menu navigasi" onClick={() => setMobileOpen(true)}>
               <Menu size={24} />
             </button>
           </div>
@@ -108,6 +109,7 @@ export default function Navigation() {
         <div className="fixed inset-0 z-[60] bg-[#F7F3EE] flex flex-col items-center justify-center gap-6">
           <button
             className="absolute top-6 right-6 text-[#5C3D2E]"
+            aria-label="Tutup menu navigasi"
             onClick={() => setMobileOpen(false)}
           >
             <X size={28} />

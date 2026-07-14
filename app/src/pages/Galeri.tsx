@@ -103,6 +103,7 @@ export default function Galeri() {
         >
           <button
             className="absolute top-6 right-6 text-white hover:text-[#F7F3EE] transition-colors"
+            aria-label="Tutup gambar"
             onClick={() => setLightbox(null)}
           >
             <X size={32} />
