@@ -30,7 +30,7 @@ export default function App() {
       <Route path="/cafe" element={<Cafe />} />
       <Route path="/galeri" element={<Galeri />} />
       <Route path="/kontak" element={<Kontak />} />
-      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminLogin />} />
       <Route
         path="/admin/dashboard"
         element={
