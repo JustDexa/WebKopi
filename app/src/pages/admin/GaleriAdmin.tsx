@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import BackButton from '@/components/ui/backButton'
+import BackButton from '@/components/ui/BackButton'
 
 interface GalleryImage {
   id: string
