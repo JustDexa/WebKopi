@@ -57,7 +57,7 @@ export default function Home() {
       >
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: 'url(/assets/kebun-10hektar.jpg)' }}
+          style={{ backgroundImage: 'url(/assets/kebun-10hektar.webp)' }}
         />
         <div className="absolute inset-0 bg-[rgba(44,24,16,0.5)]" />
         <div className="relative z-10 text-center max-w-[800px] px-6">
@@ -114,7 +114,7 @@ export default function Home() {
               </div>
               <div data-animate="scaleIn">
                 <img
-                  src="/assets/kebun-robusta.jpg"
+                  src="/assets/kebun-robusta.webp"
                   alt="Kebun Kopi Robusta Bukit Mangir"
                   className="rounded-xl shadow-[0_4px_24px_rgba(44,24,16,0.08)] w-full"
                 />
@@ -154,7 +154,7 @@ export default function Home() {
         {/* CTA Section */}
         <section
           className="relative py-32 bg-cover bg-center bg-fixed"
-          style={{ backgroundImage: 'url(/assets/biji-kopi.jpg)' }}
+          style={{ backgroundImage: 'url(/assets/biji-kopi.webp)' }}
         >
           <div className="absolute inset-0 bg-[rgba(44,24,16,0.65)]" />
           <div className="relative z-10 max-w-[640px] mx-auto px-6 text-center" data-animate="fadeUp">

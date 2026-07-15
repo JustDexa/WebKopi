@@ -66,7 +66,7 @@ const contentRef = useScrollAnimation()
               </div>
               <div data-animate="fadeUp" className="flex justify-center">
                 <img
-                  src="/assets/logo-cafe.png"
+                  src="/assets/logo-cafe.webp"
                   alt="Logo Mangir Coffee and Tea"
                   className="max-w-[340px] w-full rounded-xl shadow-[0_4px_24px_rgba(44,24,16,0.08)]"
                 />

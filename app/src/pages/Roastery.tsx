@@ -6,8 +6,6 @@ import PageHero from '../components/PageHero'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 
 export default function Roastery() {
-  // 1. Gunakan useLayoutEffect dan letakkan di ATAS hook animasi
-  // Ini memaksa scroll ke atas terjadi SEBELUM GSAP mengkalkulasi kordinat elemen.
   useLayoutEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -54,7 +52,7 @@ export default function Roastery() {
             <div className="grid grid-cols-1 lg:grid-cols-[45%_55%] gap-16 items-center">
               <div data-animate="fadeUp" className="flex justify-center">
                 <img
-                  src="/assets/logo-roastery.png"
+                  src="/assets/logo-roastery.webp"
                   alt="Logo Mangir Roastery"
                   className="max-w-[320px] w-full rounded-xl shadow-[0_4px_24px_rgba(44,24,16,0.08)]"
                 />

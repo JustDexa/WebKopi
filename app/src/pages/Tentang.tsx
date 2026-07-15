@@ -25,7 +25,7 @@ export default function Tentang() {
     <div>
       <Navigation />
       <PageHero
-        bgImage="/assets/kebun-10hektar2.jpg"
+        bgImage="/assets/kebun-10hektar2.webp"
         breadcrumb="Tentang Kami"
         title="Tentang Kami"
         subtitle="Mengenal lebih dekat Kopi Tjap Mangir dan P4S Ngabei Garden"

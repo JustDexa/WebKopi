@@ -75,7 +75,7 @@ export default function Produk() {
     <div>
       <Navigation />
       <PageHero
-        bgImage="/assets/biji-kopi.jpg"
+        bgImage="/assets/biji-kopi.webp"
         breadcrumb="Produk"
         title="Produk Kopi Tjap Mangir"
         subtitle="Arabica, Robusta, dan Liberika — Green Bean & Roasted Bean"

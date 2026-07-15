@@ -79,7 +79,7 @@ export default function Kebun() {
     <div>
       <Navigation />
       <PageHero
-        bgImage="/assets/kebun-robusta2.jpg"
+        bgImage="/assets/kebun-robusta2.webp"
         breadcrumb="Kebun Kopi"
         title="Kebun Kopi Tjap Mangir"
         subtitle="Melihat lebih dekat kebun kopi kami di Bukit Mangir"

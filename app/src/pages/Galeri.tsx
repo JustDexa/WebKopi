@@ -63,7 +63,7 @@ export default function Galeri() {
     <div>
       <Navigation />
       <PageHero
-        bgImage="/assets/kebun-robusta3.jpg"
+        bgImage="/assets/kebun-robusta3.webp"
         breadcrumb="Galeri"
         title="Galeri"
         subtitle="Potret kebun, tanaman, dan aktivitas petani di Bukit Mangir"

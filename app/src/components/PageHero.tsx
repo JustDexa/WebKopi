@@ -9,14 +9,16 @@ interface PageHeroProps {
 }
 
 export default function PageHero({ bgImage, bgGradient, breadcrumb, title, subtitle }: PageHeroProps) {
+  // Gabungkan logika background di luar return agar lebih bersih
+  const heroBg = bgGradient ? bgGradient : (bgImage ? `url('${bgImage}')` : undefined);
+
   return (
     <section
       className="relative h-[360px] flex items-center justify-center overflow-hidden"
       style={{
-        backgroundImage: bgImage ? `url(${bgImage})` : undefined,
+        backgroundImage: heroBg,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        background: bgGradient || undefined,
       }}
     >
       {/* Overlay */}
