@@ -12,12 +12,14 @@ import './index.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import { CartProvider } from './context/CartContext.tsx'
+import { Toaster } from './components/ui/sonner.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <AuthProvider>
       <CartProvider>
-      <App />
+        <App />
+        <Toaster position="top-center" richColors />
       </CartProvider>
     </AuthProvider>
   </BrowserRouter>,

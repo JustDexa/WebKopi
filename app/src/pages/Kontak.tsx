@@ -1,12 +1,8 @@
-import { useState, useEffect} from 'react'
-import { User, Building, Phone, Smartphone, Mail } from 'lucide-react'
-import Navigation from '../components/Navigation'
-import Footer from '../components/Footer'
+import { useState, useEffect } from 'react'
+import { User, Building, Phone, Smartphone, Mail, Check } from 'lucide-react'
 import PageHero from '../components/PageHero'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import emailjs from '@emailjs/browser'
-
-
 
 export default function Kontak() {
   const [submitted, setSubmitted] = useState(false)
@@ -24,10 +20,9 @@ export default function Kontak() {
     window.scrollTo(0, 0)
   }, [])
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,159 +53,131 @@ export default function Kontak() {
     { icon: Mail, label: 'Email', value: 'ngabeigarden@gmail.com', href: 'mailto:ngabeigarden@gmail.com' },
   ]
 
+  const inputClass =
+    'w-full rounded-2xl border border-border bg-background px-4 py-3.5 text-[15px] text-foreground outline-none transition-all focus:border-accent focus:ring-2 focus:ring-accent/20'
+
   return (
     <div>
-      <Navigation />
       <PageHero
-        bgGradient="linear-gradient(135deg, #5C3D2E 0%, #3D2B1F 100%)"
+        bgGradient="linear-gradient(135deg, hsl(20 28% 18%) 0%, hsl(20 32% 10%) 100%)"
         breadcrumb="Kontak"
         title="Kontak Kami"
         subtitle="Hubungi kami untuk kerja sama, pemesanan, atau informasi lebih lanjut"
       />
 
       <div ref={contentRef}>
-        {/* Contact Info */}
-        <section className="bg-[#F7F3EE] py-24">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-              {/* Left - Contact Details */}
-              <div data-animate="fadeUp">
-                <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                  Hubungi Kami
-                </p>
-                <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E] leading-tight mt-3">
-                  Mari Terhubung
-                </h2>
-                <p className="mt-5 text-[19px] text-[#2C1810] leading-relaxed">
-                  Kami terbuka untuk kerja sama, pemesanan produk, dukungan pengembangan, dan kunjungan ke kebun. Jangan ragu untuk menghubungi kami.
-                </p>
+        <section className="bg-background py-24">
+          <div className="container-brand grid grid-cols-1 gap-16 lg:grid-cols-2">
+            <div data-animate="fadeUp">
+              <p className="text-caption text-accent">Hubungi Kami</p>
+              <h2 className="mt-3 font-serif text-heading-1 font-bold leading-tight text-primary">
+                Mari Terhubung
+              </h2>
+              <p className="mt-5 text-body-lg leading-relaxed text-foreground/80">
+                Kami terbuka untuk kerja sama, pemesanan produk, dukungan pengembangan, dan kunjungan ke kebun. Jangan ragu untuk menghubungi kami.
+              </p>
 
-                <div className="mt-10 space-y-4">
-                  {contactCards.map((card, i) => (
-                    <div
-                      key={i}
-                      className="bg-white rounded-md p-5 flex items-start gap-4 shadow-[0_4px_24px_rgba(44,24,16,0.08)]"
-                    >
-                      <card.icon size={24} className="text-[#4A7C59] flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#6B5B4F]">
-                          {card.label}
-                        </p>
-                        {card.href ? (
-                          <a
-                            href={card.href}
-                            className="text-[17px] font-semibold text-[#8B5E3C] hover:text-[#4A7C59] transition-colors"
-                          >
-                            {card.value}
-                          </a>
-                        ) : (
-                          <p className="text-[17px] font-semibold text-[#2C1810]">
-                            {card.value}
-                          </p>
-                        )}
-                      </div>
+              <div className="mt-10 space-y-3.5">
+                {contactCards.map((card, i) => (
+                  <div key={i} className="flex items-start gap-4 rounded-2xl bg-card p-5 shadow-soft">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10">
+                      <card.icon size={18} className="text-accent" />
                     </div>
-                  ))}
-                </div>
+                    <div>
+                      <p className="text-caption text-muted-foreground">{card.label}</p>
+                      {card.href ? (
+                        <a href={card.href} className="text-[16px] font-semibold text-primary transition-colors hover:text-accent">
+                          {card.value}
+                        </a>
+                      ) : (
+                        <p className="text-[16px] font-semibold text-foreground">{card.value}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
+            </div>
 
-              {/* Right - Contact Form */}
-              <div data-animate="fadeUp">
-                <div className="bg-white rounded-xl p-12 shadow-[0_4px_24px_rgba(44,24,16,0.08)]">
-                  <h3 className="font-['Playfair_Display'] text-[32px] font-semibold text-[#5C3D2E] mb-8">
-                    Kirim Pesan
-                  </h3>
+            <div data-animate="fadeUp">
+              <div className="rounded-3xl bg-card p-9 shadow-card md:p-12">
+                <h3 className="font-serif text-heading-2 font-semibold text-primary">Kirim Pesan</h3>
 
-                  {submitted ? (
-                    <div className="text-center py-12">
-                      <div className="w-16 h-16 rounded-full bg-[#4A7C59] text-white flex items-center justify-center mx-auto mb-4 text-[24px]">
-                        &#10003;
-                      </div>
-                      <h4 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
-                        Terima Kasih!
-                      </h4>
-                      <p className="mt-2 text-[17px] text-[#6B5B4F]">
-                        Pesan Anda telah terkirim. Kami akan menghubungi Anda segera.
-                      </p>
+                {submitted ? (
+                  <div className="py-14 text-center">
+                    <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                      <Check size={26} strokeWidth={2.5} />
                     </div>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      <div>
-                        <label className="block text-[14px] font-medium text-[#2C1810] mb-2">
-                          Nama Lengkap
-                        </label>
+                    <h4 className="font-serif text-heading-3 font-semibold text-primary">Terima Kasih!</h4>
+                    <p className="mt-2 text-body text-muted-foreground">
+                      Pesan Anda telah terkirim. Kami akan menghubungi Anda segera.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                    <div>
+                      <label className="mb-2 block text-small font-medium text-foreground">Nama Lengkap</label>
                       <input
                         type="text"
                         name="name"
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full border border-[#E8DFD5] rounded-md px-4 py-3.5 text-[15px] text-[#2C1810] focus:border-[#8B5E3C] focus:ring-2 focus:ring-[rgba(139,94,60,0.2)] outline-none transition-all"
+                        className={inputClass}
                         placeholder="Masukkan nama Anda"
                       />
-                      </div>
-                      <div>
-                        <label className="block text-[14px] font-medium text-[#2C1810] mb-2">
-                          Email
-                        </label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full border border-[#E8DFD5] rounded-md px-4 py-3.5 text-[15px] text-[#2C1810] focus:border-[#8B5E3C] focus:ring-2 focus:ring-[rgba(139,94,60,0.2)] outline-none transition-all"
-                      placeholder="Masukkan email Anda"
-                    />
-                      </div>
-                      <div>
-                        <label className="block text-[14px] font-medium text-[#2C1810] mb-2">
-                          Subjek
-                        </label>
-                    <input
-                      type="text"
-                      name="title"
-                      required
-                      value={formData.title}
-                      onChange={handleChange}
-                      className="w-full border border-[#E8DFD5] rounded-md px-4 py-3.5 text-[15px] text-[#2C1810] focus:border-[#8B5E3C] focus:ring-2 focus:ring-[rgba(139,94,60,0.2)] outline-none transition-all"
-                      placeholder="Masukkan Subjek Anda"
-                    />
-                      </div>
-                      <div>
-                        <label className="block text-[14px] font-medium text-[#2C1810] mb-2">
-                          Pesan
-                        </label>
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-small font-medium text-foreground">Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={inputClass}
+                        placeholder="Masukkan email Anda"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-small font-medium text-foreground">Subjek</label>
+                      <input
+                        type="text"
+                        name="title"
+                        required
+                        value={formData.title}
+                        onChange={handleChange}
+                        className={inputClass}
+                        placeholder="Masukkan Subjek Anda"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-small font-medium text-foreground">Pesan</label>
                       <textarea
                         name="message"
                         rows={4}
                         required
                         value={formData.message}
                         onChange={handleChange}
-                        className="w-full border border-[#E8DFD5] rounded-md px-4 py-3.5 text-[15px] text-[#2C1810] focus:border-[#8B5E3C] focus:ring-2 focus:ring-[rgba(139,94,60,0.2)] outline-none transition-all resize-none"
+                        className={`${inputClass} resize-none`}
                         placeholder="Tulis pesan Anda di sini..."
                       />
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={isSending}
-                        className="w-full bg-[#5C3D2E] text-white text-[14px] font-semibold uppercase tracking-[0.04em] py-4 rounded-md hover:bg-[#4A7C59] transition-colors duration-200 disabled:opacity-50"
-                      >
-                        {isSending ? 'Mengirim...' : 'Kirim Pesan'}
-                      </button>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isSending}
+                      className="w-full rounded-2xl bg-primary py-4 text-[14px] font-semibold uppercase tracking-[0.06em] text-primary-foreground transition-colors duration-200 hover:bg-primary/85 disabled:opacity-50"
+                    >
+                      {isSending ? 'Mengirim...' : 'Kirim Pesan'}
+                    </button>
 
-                      {error && (
-                        <p className="text-red-600 text-sm mt-2">{error}</p>
-                      )}
-                    </form>
-                  )}
-                </div>
+                    {error && <p className="mt-2 text-small text-destructive">{error}</p>}
+                  </form>
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Map */}
         <section>
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.!2d111.165!3d-7.668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e798a1c8c0e9d49%3A0x6f2a0b9c7b7d0e1f!2sTrengguli%2C%20Kec.%20Jenawi%2C%20Kabupaten%20Karanganyar%2C%20Jawa%20Tengah!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
@@ -224,8 +191,6 @@ export default function Kontak() {
           />
         </section>
       </div>
-
-      <Footer />
     </div>
   )
 }

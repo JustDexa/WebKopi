@@ -4,38 +4,169 @@
 
 @layer base {
   :root {
-    --background: 36 33% 95%;
-    --foreground: 18 46% 12%;
+    /* Base surfaces */
+    --background: 32 38% 96%;
+    --foreground: 22 32% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 18 46% 12%;
-    --popover: 36 33% 95%;
-    --popover-foreground: 18 46% 12%;
-    --primary: 21 34% 28%;
-    --primary-foreground: 36 33% 95%;
-    --secondary: 36 33% 95%;
-    --secondary-foreground: 21 34% 28%;
-    --muted: 30 18% 88%;
-    --muted-foreground: 18 20% 36%;
-    --accent: 142 26% 38%;
+    --card-foreground: 22 32% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 22 32% 12%;
+
+    /* Brand: espresso (marketing / navigational) */
+    --primary: 20 28% 18%;
+    --primary-foreground: 32 38% 96%;
+
+    /* Secondary surface */
+    --secondary: 32 30% 92%;
+    --secondary-foreground: 20 28% 18%;
+
+    --muted: 30 22% 91%;
+    --muted-foreground: 22 14% 40%;
+
+    /* Accent: forest green — reserved for transactional CTAs */
+    --accent: 148 30% 24%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+
+    /* WhatsApp-specific green, kept distinct from brand accent on purpose */
+    --whatsapp: 142 70% 33%;
+    --whatsapp-foreground: 0 0% 100%;
+
+    /* Warm gold — sparing highlight, used only for small marks (badges, ratings, dividers) */
+    --gold: 38 55% 52%;
+
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 30 18% 88%;
-    --input: 30 18% 88%;
-    --ring: 21 34% 28%;
-    --radius: 0.625rem;
+
+    --border: 28 20% 88%;
+    --input: 28 20% 88%;
+    --ring: 20 28% 18%;
+    --radius: 1rem;
   }
 
   * {
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-[#F7F3EE] text-[#2C1810] antialiased;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
+    font-feature-settings: 'ss01' on, 'cv11' on;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
+    letter-spacing: -0.01em;
   }
+
+  ::selection {
+    background-color: hsl(var(--accent) / 0.18);
+    color: hsl(var(--primary));
+  }
+}
+
+@layer utilities {
+  .text-caption {
+    @apply text-[13px] font-semibold uppercase tracking-[0.14em];
+  }
+
+  .container-brand {
+    @apply max-w-[1240px] mx-auto px-6 md:px-8;
+  }
+
+  .grain {
+    position: relative;
+  }
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out both;
+  }
+  .animate-scale-bounce {
+    animation: scaleBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+}
+
+/* Scroll-reveal system — driven by IntersectionObserver (useScrollAnimation),
+   not by pre-computed pixel offsets. This means it self-corrects on any
+   layout shift (image loads, font swaps, async content) with no manual
+   refresh logic needed, unlike position-caching scroll libraries. */
+[data-animate] {
+  opacity: 0;
+}
+[data-animate="fadeUp"],
+[data-animate="scaleIn"] {
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-animate="fadeUp"] {
+  transform: translateY(32px);
+}
+[data-animate="scaleIn"] {
+  transform: scale(0.96);
+}
+[data-animate="fadeIn"] {
+  transition: opacity 0.6s ease-out;
+}
+[data-animate="staggerFadeUp"] {
+  transition: opacity 0.01s;
+}
+[data-animate="staggerFadeUp"] > * {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-animate].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+[data-animate="staggerFadeUp"].is-revealed > * {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate],
+  [data-animate="staggerFadeUp"] > * {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleBounce {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+
+/* Custom scrollbar — subtle, matches brand */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
 }

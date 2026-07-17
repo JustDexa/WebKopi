@@ -1,81 +1,64 @@
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
+const ANIMATE_SELECTOR = '[data-animate]'
+const PROCESSED_ATTR = 'data-observed'
+const REVEALED_CLASS = 'is-revealed'
+const STAGGER_STEP_MS = 90
 
+// Reveals [data-animate] elements as they scroll into view using
+// IntersectionObserver — a browser-native API that reacts to an element's
+// *actual current* position every time the browser recalculates layout.
+// This intentionally avoids libraries that cache a pixel position once and
+// require manual "refresh" calls to stay correct (e.g. GSAP ScrollTrigger),
+// which is what caused sections to stay stuck invisible until a hard reload
+// whenever an image, font, or async-fetched card shifted the page's layout
+// after that one-time measurement.
 export function useScrollAnimation() {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!ref.current) return
+    const container = ref.current
 
-    const ctx = gsap.context(() => {
-      // fadeUp animation
-      gsap.utils.toArray<HTMLElement>('[data-animate="fadeUp"]').forEach((el) => {
-        gsap.from(el, {
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-          },
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          entry.target.classList.add(REVEALED_CLASS)
+          io.unobserve(entry.target)
         })
-      })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -8% 0px' }
+    )
 
-      // fadeIn animation
-      gsap.utils.toArray<HTMLElement>('[data-animate="fadeIn"]').forEach((el) => {
-        gsap.from(el, {
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 80%',
-          },
+    const observeElement = (el: HTMLElement) => {
+      el.setAttribute(PROCESSED_ATTR, 'true')
+
+      if (el.getAttribute('data-animate') === 'staggerFadeUp') {
+        Array.from(el.children).forEach((child, i) => {
+          ;(child as HTMLElement).style.transitionDelay = `${i * STAGGER_STEP_MS}ms`
         })
-      })
+      }
 
-      // scaleIn animation
-      gsap.utils.toArray<HTMLElement>('[data-animate="scaleIn"]').forEach((el) => {
-        gsap.from(el, {
-          scale: 0.95,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-          },
-        })
-      })
+      io.observe(el)
+    }
 
-      // staggerFadeUp
-      gsap.utils.toArray<HTMLElement>('[data-animate="staggerFadeUp"]').forEach((parent) => {
-        gsap.from(parent.children, {
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          stagger: 0.12,
-          scrollTrigger: {
-            trigger: parent,
-            start: 'top 85%',
-          },
-        })
-      })
-    }, ref)
+    const scan = () => {
+      container
+        .querySelectorAll<HTMLElement>(`${ANIMATE_SELECTOR}:not([${PROCESSED_ATTR}])`)
+        .forEach(observeElement)
+    }
+    scan()
 
-    const refreshScrollTrigger = () => ScrollTrigger.refresh()
-    window.addEventListener('load', refreshScrollTrigger)
-
-    document.fonts.ready.then(refreshScrollTrigger)
+    // Content that arrives after an async fetch (Produk/Kebun/Galeri, etc.)
+    // renders into the DOM after this effect already ran once — this picks
+    // those elements up and starts observing them too.
+    const mutationObserver = new MutationObserver(scan)
+    mutationObserver.observe(container, { childList: true, subtree: true })
 
     return () => {
-    ctx.revert()
-    window.removeEventListener('load', refreshScrollTrigger)
+      io.disconnect()
+      mutationObserver.disconnect()
     }
   }, [])
 

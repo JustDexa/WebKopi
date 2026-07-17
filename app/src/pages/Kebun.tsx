@@ -1,29 +1,9 @@
 import { useEffect, useState } from 'react'
-import Navigation from '../components/Navigation'
-import Footer from '../components/Footer'
 import PageHero from '../components/PageHero'
+import { Skeleton } from '../components/ui/skeleton'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { supabase } from '../lib/supabase'
-
-interface KebunInfo {
-  id: string
-  nama_lokasi: string
-  title: string
-  description_1: string
-  description_2: string
-  luas_lahan: string
-  jenis_kopi_count: number
-  masa_budidaya: string
-  description_bawah: string
-  image_url: string
-  urutan_tampil: number
-}
-
-interface GalleryDisplayItem {
-  id: string
-  src: string
-  alt: string
-}
+import type { KebunInfo, GalleryDisplayItem } from '@/types'
 
 export default function Kebun() {
   const contentRef = useScrollAnimation()
@@ -45,19 +25,18 @@ export default function Kebun() {
 
       if (kebunRes.data) setKebunList(kebunRes.data)
 
-      // Gabung foto dari tiap entri kebun + foto tambahan manual
       const fromKebun: GalleryDisplayItem[] = (kebunRes.data || [])
         .filter((k) => k.image_url)
         .map((k) => ({
           id: `kebun-${k.id}`,
-          src: k.image_url,
-          alt: k.nama_lokasi,
+          image_url: k.image_url,
+          caption: k.nama_lokasi,
         }))
 
       const fromExtra: GalleryDisplayItem[] = (extraGalleryRes.data || []).map((g) => ({
         id: `extra-${g.id}`,
-        src: g.image_url,
-        alt: g.caption || 'Galeri Kebun',
+        image_url: g.image_url,
+        caption: g.caption || 'Galeri Kebun',
       }))
 
       setGalleryImages([...fromKebun, ...fromExtra])
@@ -77,7 +56,6 @@ export default function Kebun() {
 
   return (
     <div>
-      <Navigation />
       <PageHero
         bgImage="/assets/kebun-robusta2.webp"
         breadcrumb="Kebun Kopi"
@@ -86,27 +64,31 @@ export default function Kebun() {
       />
 
       <div ref={contentRef}>
-        {/* Kebun Overview */}
         {loading ? (
-          <section className="bg-[#F7F3EE] py-24 text-center">
-            <p>Memuat data kebun...</p>
+          <section className="bg-background py-24">
+            <div className="container-brand grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
+              <Skeleton className="h-[360px] w-full rounded-3xl" />
+              <div className="space-y-4">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-4/5" />
+              </div>
+            </div>
           </section>
         ) : kebunList.length === 0 ? (
-          <section className="bg-[#F7F3EE] py-24 text-center">
-            <p className="text-[#6B5B4F]">Belum ada data kebun.</p>
+          <section className="bg-background py-24 text-center">
+            <p className="text-body-lg text-muted-foreground">Belum ada data kebun.</p>
           </section>
         ) : (
           kebunList.map((kebun, index) => {
             const isEven = index % 2 === 0
 
             return (
-              <section
-                key={kebun.id}
-                className={index % 2 === 0 ? 'bg-[#F7F3EE] py-24' : 'bg-white py-24'}
-              >
-                <div className="max-w-[1200px] mx-auto px-6">
+              <section key={kebun.id} className={index % 2 === 0 ? 'bg-background py-24' : 'bg-secondary/40 py-24'}>
+                <div className="container-brand">
                   <div
-                    className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${
+                    className={`grid grid-cols-1 items-center gap-14 lg:grid-cols-2 ${
                       isEven ? '' : 'lg:[direction:rtl]'
                     }`}
                   >
@@ -114,50 +96,42 @@ export default function Kebun() {
                       <img
                         src={kebun.image_url}
                         alt={kebun.nama_lokasi}
-                        className="rounded-xl shadow-[0_4px_24px_rgba(44,24,16,0.08)] w-full"
+                        className="w-full rounded-3xl shadow-card"
                       />
                     </div>
                     <div data-animate="fadeUp" className={isEven ? '' : 'lg:[direction:ltr]'}>
-                      <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                        Kebun Kopi Kami
-                      </p>
-                      <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E] leading-tight">
+                      <p className="text-caption text-accent">Kebun Kopi Kami</p>
+                      <h2 className="mt-4 font-serif text-heading-1 font-bold leading-tight text-primary">
                         {kebun.title}
                       </h2>
-                      <p className="mt-5 text-[19px] text-[#2C1810] leading-relaxed">
+                      <p className="mt-5 text-body-lg leading-relaxed text-foreground/85">
                         {kebun.description_1}
                       </p>
                       {kebun.description_2 && (
-                        <p className="mt-4 text-[17px] text-[#2C1810] leading-relaxed">
+                        <p className="mt-4 text-body leading-relaxed text-foreground/70">
                           {kebun.description_2}
                         </p>
                       )}
 
-                      <div className="flex flex-wrap gap-10 mt-9">
+                      <div className="mt-9 flex flex-wrap gap-10">
                         <div>
-                          <p className="font-['Playfair_Display'] text-[36px] font-bold text-[#5C3D2E]">
-                            {kebun.luas_lahan}
-                          </p>
-                          <p className="text-[14px] text-[#6B5B4F]">Luas Lahan</p>
+                          <p className="font-serif text-heading-2 font-bold text-primary">{kebun.luas_lahan}</p>
+                          <p className="text-small text-muted-foreground">Luas Lahan</p>
                         </div>
                         <div>
-                          <p className="font-['Playfair_Display'] text-[36px] font-bold text-[#5C3D2E]">
-                            {kebun.jenis_kopi_count}
-                          </p>
-                          <p className="text-[14px] text-[#6B5B4F]">Jenis Kopi</p>
+                          <p className="font-serif text-heading-2 font-bold text-primary">{kebun.jenis_kopi_count}</p>
+                          <p className="text-small text-muted-foreground">Jenis Kopi</p>
                         </div>
                         <div>
-                          <p className="font-['Playfair_Display'] text-[36px] font-bold text-[#5C3D2E]">
-                            {kebun.masa_budidaya}
-                          </p>
-                          <p className="text-[14px] text-[#6B5B4F]">Masa Budidaya</p>
+                          <p className="font-serif text-heading-2 font-bold text-primary">{kebun.masa_budidaya}</p>
+                          <p className="text-small text-muted-foreground">Masa Budidaya</p>
                         </div>
                       </div>
 
                       {kebun.description_bawah && (
                         <>
-                          <div className="border-t border-[#E8DFD5] my-8" />
-                          <p className="text-[17px] text-[#6B5B4F] leading-relaxed">
+                          <div className="my-8 border-t border-border" />
+                          <p className="text-body leading-relaxed text-muted-foreground">
                             {kebun.description_bawah}
                           </p>
                         </>
@@ -171,30 +145,28 @@ export default function Kebun() {
         )}
 
         {/* Gallery */}
-        <section className="bg-white py-24">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <div className="text-center mb-14" data-animate="fadeUp">
-              <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                Galeri Kebun
-              </p>
-              <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E]">
+        <section className="bg-background py-24">
+          <div className="container-brand">
+            <div className="mb-14 text-center" data-animate="fadeUp">
+              <p className="text-caption text-accent">Galeri Kebun</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
                 Lihat Keindahan Kebun Kami
               </h2>
-              <p className="mt-4 text-[17px] text-[#6B5B4F]">
+              <p className="mt-4 text-body-lg text-muted-foreground">
                 Potret kebun kopi dan aktivitas petani di Bukit Mangir
               </p>
             </div>
 
             {galleryImages.length === 0 ? (
-              <p className="text-center text-[#6B5B4F]">Belum ada foto galeri kebun.</p>
+              <p className="text-center text-muted-foreground">Belum ada foto galeri kebun.</p>
             ) : (
-              <div data-animate="staggerFadeUp" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div data-animate="staggerFadeUp" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {galleryImages.map((img) => (
-                  <div key={img.id} className="rounded-xl overflow-hidden shadow-[0_4px_24px_rgba(44,24,16,0.08)] group">
+                  <div key={img.id} className="group overflow-hidden rounded-3xl shadow-soft">
                     <img
-                      src={img.src}
-                      alt={img.alt}
-                      className="w-full h-[260px] object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                      src={img.image_url}
+                      alt={img.caption}
+                      className="h-[260px] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </div>
                 ))}
@@ -204,41 +176,35 @@ export default function Kebun() {
         </section>
 
         {/* Proses Budidaya */}
-        <section className="bg-[#F7F3EE] py-24">
-          <div className="max-w-[1000px] mx-auto px-6">
-            <div className="text-center mb-16" data-animate="fadeUp">
-              <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                Proses Budidaya
-              </p>
-              <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E]">
+        <section className="bg-secondary/40 py-24">
+          <div className="mx-auto max-w-[1000px] px-6">
+            <div className="mb-16 text-center" data-animate="fadeUp">
+              <p className="text-caption text-accent">Proses Budidaya</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
                 Dari Penanaman Sampai Panen
               </h2>
             </div>
 
             <div className="relative">
-              <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-[#E8DFD5] -translate-x-1/2 hidden lg:block" />
+              <div className="absolute left-1/2 top-0 bottom-0 hidden w-[2px] -translate-x-1/2 bg-border lg:block" />
 
-              <div className="space-y-12">
+              <div className="space-y-10">
                 {steps.map((step, i) => (
                   <div
                     key={i}
-                    className={`relative flex flex-col lg:flex-row items-center gap-8 ${
+                    className={`relative flex flex-col items-center gap-6 lg:flex-row ${
                       step.side === 'right' ? 'lg:flex-row-reverse' : ''
                     }`}
                     data-animate="fadeUp"
                   >
                     <div className={`flex-1 ${step.side === 'left' ? 'lg:text-right' : 'lg:text-left'}`}>
-                      <div className="bg-white rounded-lg p-6 shadow-[0_4px_24px_rgba(44,24,16,0.08)]">
-                        <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
-                          {step.title}
-                        </h3>
-                        <p className="mt-2 text-[15px] text-[#6B5B4F] leading-relaxed">
-                          {step.desc}
-                        </p>
+                      <div className="rounded-2xl bg-card p-6 shadow-soft">
+                        <h3 className="font-serif text-heading-3 font-semibold text-primary">{step.title}</h3>
+                        <p className="mt-2 text-small leading-relaxed text-muted-foreground">{step.desc}</p>
                       </div>
                     </div>
-                    <div className="relative z-10 w-4 h-4 rounded-full bg-[#4A7C59] border-[3px] border-[#F7F3EE] hidden lg:block flex-shrink-0" />
-                    <div className="flex-1 hidden lg:block" />
+                    <div className="relative z-10 hidden h-4 w-4 flex-shrink-0 rounded-full border-[3px] border-secondary bg-accent lg:block" />
+                    <div className="hidden flex-1 lg:block" />
                   </div>
                 ))}
               </div>
@@ -246,8 +212,6 @@ export default function Kebun() {
           </div>
         </section>
       </div>
-
-      <Footer />
     </div>
   )
 }

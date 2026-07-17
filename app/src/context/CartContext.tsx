@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 
 export interface CartItem {
-  cartItemId: string 
+  cartItemId: string
   productId: string
   productName: string
   variantId: string
@@ -22,12 +22,35 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
+const STORAGE_KEY = 'kopi-tjap-mangir-cart'
+
+function loadInitialItems(): CartItem[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed)) return parsed
+    return []
+  } catch {
+    return []
+  }
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([])
+  const [items, setItems] = useState<CartItem[]>(loadInitialItems)
+
+  // Sinkronkan ke localStorage setiap kali cart berubah, supaya user yang
+  // pindah tab ke WhatsApp lalu balik lagi tidak kehilangan keranjangnya.
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+    } catch {
+      // localStorage bisa saja penuh/diblokir — cart tetap jalan di memory
+    }
+  }, [items])
 
   const addItem = (newItem: Omit<CartItem, 'cartItemId' | 'quantity'>) => {
     setItems((prev) => {
-      // Kalau produk+varian yang sama udah ada di cart, tambah quantity-nya aja
       const existing = prev.find(
         (i) => i.productId === newItem.productId && i.variantId === newItem.variantId
       )

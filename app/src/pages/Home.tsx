@@ -1,9 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router'
 import { gsap } from 'gsap'
-import { Mountain, Users, Coffee, TrendingUp } from 'lucide-react'
-import Navigation from '../components/Navigation'
-import Footer from '../components/Footer'
+import { Mountain, Users, Coffee, TrendingUp, Star, ArrowRight } from 'lucide-react'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 
 export default function Home() {
@@ -11,7 +9,6 @@ export default function Home() {
   const contentRef = useScrollAnimation()
 
   useEffect(() => {
-    // Hero entrance animations
     if (heroRef.current) {
       const tl = gsap.timeline()
       tl.from('.hero-tag', { opacity: 0, duration: 0.6, delay: 0.3 })
@@ -19,8 +16,6 @@ export default function Home() {
         .from('.hero-sub', { y: 40, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
         .from('.hero-cta', { y: 40, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
     }
-
-    // Scroll animations
   }, [])
 
   const features = [
@@ -46,105 +41,151 @@ export default function Home() {
     },
   ]
 
+  const testimonials = [
+    {
+      quote: 'Rasa kopinya khas, sedikit fruity dan aftertaste-nya bersih. Kirimannya juga rapi.',
+      name: 'Dimas A.',
+      role: 'Pelanggan Arabica Bukit Mangir',
+    },
+    {
+      quote: 'Suka karena tahu langsung asal kebunnya. Terasa lebih personal dibanding kopi kemasan biasa.',
+      name: 'Ratna S.',
+      role: 'Pelanggan Robusta',
+    },
+    {
+      quote: 'Proses order lewat WhatsApp gampang dan cepat direspon oleh tim.',
+      name: 'Yusuf P.',
+      role: 'Pelanggan Liberika',
+    },
+  ]
+
   return (
     <div>
-      <Navigation />
-
       {/* Hero Section */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden"
-      >
+      <section ref={heroRef} className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(/assets/kebun-10hektar.webp)' }}
         />
-        <div className="absolute inset-0 bg-[rgba(44,24,16,0.5)]" />
-        <div className="relative z-10 text-center max-w-[800px] px-6">
-          <p className="hero-tag text-[13px] font-medium uppercase tracking-[0.15em] text-[#F7F3EE] mb-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/55 via-primary/40 to-primary/70" />
+        <div className="relative z-10 mx-auto max-w-[820px] px-6 text-center">
+          <p className="hero-tag mb-6 text-caption text-white/80">
             Kopi Lokal Lereng Gunung Lawu
           </p>
-          <h1 className="hero-title font-['Playfair_Display'] text-[72px] max-md:text-[48px] font-bold text-white leading-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.3)]">
+          <h1 className="hero-title font-serif text-display font-bold leading-[1.02] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.35)]">
             Kopi Tjap Mangir
           </h1>
-          <p className="hero-sub mt-5 text-[19px] text-[rgba(255,255,255,0.9)] leading-relaxed max-w-[640px] mx-auto">
+          <p className="hero-sub mx-auto mt-6 max-w-[620px] text-body-lg leading-relaxed text-white/85">
             Dari Kebun Petani Bukit Mangir, Dukuh Sekarang, Desa Trengguli, Kecamatan Jenawi — Kabupaten Karanganyar. Dikelola oleh Kelompok Tani P4S Ngabei Garden.
           </p>
-          <div className="hero-cta flex flex-wrap items-center justify-center gap-4 mt-10">
+          <div className="hero-cta mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/produk"
-              className="bg-[#5C3D2E] text-white text-[14px] font-semibold uppercase tracking-[0.04em] px-8 py-3.5 rounded-full hover:bg-[#4A7C59] transition-all duration-200 shadow-[0_2px_8px_rgba(92,61,46,0.2)]"
+              className="group flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-primary shadow-lifted transition-all duration-200 hover:bg-white/90"
             >
               Jelajahi Produk Kami
+              <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               to="/kontak"
-              className="bg-transparent border-2 border-[rgba(255,255,255,0.6)] text-white text-[14px] font-semibold uppercase tracking-[0.04em] px-8 py-3.5 rounded-full hover:border-white hover:bg-[rgba(255,255,255,0.1)] transition-all duration-200"
+              className="rounded-full border-2 border-white/50 px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-white transition-all duration-200 hover:border-white hover:bg-white/10"
             >
               Hubungi Kami
             </Link>
           </div>
         </div>
+
+        <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-white/60 md:flex">
+          <span className="text-[11px] uppercase tracking-[0.2em]">Scroll</span>
+          <div className="h-9 w-[1.5px] animate-pulse bg-white/40" />
+        </div>
       </section>
 
       <div ref={contentRef}>
         {/* Profile Ringkasan */}
-        <section className="bg-[#F7F3EE] py-24">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-16 items-center">
-              <div data-animate="fadeUp">
-                <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                  Tentang Kami
-                </p>
-                <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E] leading-tight">
-                  Kopi Asli Bukit Mangir, Dari Hulu Sampai Hilir
-                </h2>
-                <p className="mt-5 text-[19px] text-[#2C1810] leading-relaxed">
-                  Kopi Tjap Mangir adalah kopi lokal dari Bukit Mangir yang dikembangkan oleh Kelompok Tani P4S Ngabei Garden. Kami mengembangkan kopi Arabica, Robusta, dan Liberika dalam bentuk green bean dan roasted bean.
-                </p>
-                <p className="mt-4 text-[17px] text-[#2C1810] leading-relaxed">
-                  Melalui Mangir Roastery dan Mangir Coffee and Tea, Kopi Tjap Mangir diarahkan menjadi produk kopi dari kebun petani yang diproses dengan lebih baik, bernilai tambah, dan siap menjangkau pasar yang lebih luas.
-                </p>
-                <Link
-                  to="/tentang"
-                  className="inline-block mt-7 text-[15px] font-semibold text-[#5C3D2E] hover:text-[#4A7C59] transition-colors underline underline-offset-4"
-                >
-                  Pelajari Lebih Lanjut &rarr;
-                </Link>
-              </div>
-              <div data-animate="scaleIn">
-                <img
-                  src="/assets/kebun-robusta.webp"
-                  alt="Kebun Kopi Robusta Bukit Mangir"
-                  className="rounded-xl shadow-[0_4px_24px_rgba(44,24,16,0.08)] w-full"
-                />
+        <section className="bg-background py-28">
+          <div className="container-brand grid grid-cols-1 items-center gap-16 lg:grid-cols-[52%_48%]">
+            <div data-animate="fadeUp">
+              <p className="text-caption text-accent">Tentang Kami</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold leading-[1.08] text-primary">
+                Kopi Asli Bukit Mangir, Dari Hulu Sampai Hilir
+              </h2>
+              <p className="mt-6 text-body-lg leading-relaxed text-foreground/85">
+                Kopi Tjap Mangir adalah kopi lokal dari Bukit Mangir yang dikembangkan oleh Kelompok Tani P4S Ngabei Garden. Kami mengembangkan kopi Arabica, Robusta, dan Liberika dalam bentuk green bean dan roasted bean.
+              </p>
+              <p className="mt-4 text-body leading-relaxed text-foreground/70">
+                Melalui Mangir Roastery dan Mangir Coffee and Tea, Kopi Tjap Mangir diarahkan menjadi produk kopi dari kebun petani yang diproses dengan lebih baik, bernilai tambah, dan siap menjangkau pasar yang lebih luas.
+              </p>
+              <Link
+                to="/tentang"
+                className="mt-8 inline-flex items-center gap-2 text-[15px] font-semibold text-primary transition-colors hover:text-accent"
+              >
+                Pelajari Lebih Lanjut
+                <ArrowRight size={15} />
+              </Link>
+            </div>
+            <div data-animate="scaleIn" className="relative">
+              <img
+                src="/assets/kebun-robusta.webp"
+                alt="Kebun Kopi Robusta Bukit Mangir"
+                className="w-full rounded-3xl shadow-card"
+              />
+              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-card px-6 py-5 shadow-lifted md:block">
+                <p className="font-serif text-heading-3 font-bold text-primary">&plusmn;9 Ha</p>
+                <p className="text-small text-muted-foreground">Kawasan Budidaya</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Keunggulan */}
-        <section className="bg-white py-24">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] text-center mb-4">
-              Mengapa Kopi Tjap Mangir
-            </p>
-            <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E] text-center mb-16">
-              Keunggulan Kopi Kami
-            </h2>
-            <div data-animate="staggerFadeUp" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <section className="bg-secondary/50 py-28">
+          <div className="container-brand">
+            <div className="mx-auto max-w-[640px] text-center">
+              <p className="text-caption text-accent">Mengapa Kopi Tjap Mangir</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
+                Keunggulan Kopi Kami
+              </h2>
+            </div>
+            <div data-animate="staggerFadeUp" className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
               {features.map((f) => (
                 <div
-                    key={f.title}
-                    className="bg-[#F7F3EE] rounded-xl p-10 text-center hover:shadow-[0_8px_32px_rgba(44,24,16,0.12)] hover:-translate-y-1.5 transition-shadow duration-300"
-                  >
-                  <f.icon size={48} className="mx-auto text-[#4A7C59] mb-6" strokeWidth={1.5} />
-                  <h3 className="font-['Playfair_Display'] text-[22px] font-semibold text-[#5C3D2E] mb-3">
-                    {f.title}
-                  </h3>
-                  <p className="text-[15px] text-[#6B5B4F] leading-relaxed">
-                    {f.desc}
-                  </p>
+                  key={f.title}
+                  className="group rounded-3xl bg-card p-9 text-center shadow-soft transition-all duration-500 hover:-translate-y-2 hover:shadow-lifted"
+                >
+                  <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 transition-colors group-hover:bg-accent">
+                    <f.icon size={26} className="text-accent transition-colors group-hover:text-accent-foreground" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="font-serif text-heading-3 font-semibold text-primary">{f.title}</h3>
+                  <p className="mt-3 text-small leading-relaxed text-muted-foreground">{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimoni — social proof (fixes audit D2) */}
+        <section className="bg-background py-28">
+          <div className="container-brand">
+            <div className="mx-auto max-w-[640px] text-center">
+              <p className="text-caption text-accent">Kata Mereka</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
+                Dipercaya Penikmat Kopi
+              </h2>
+            </div>
+            <div data-animate="staggerFadeUp" className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+              {testimonials.map((t, i) => (
+                <div key={i} className="rounded-3xl border border-border bg-card p-8 shadow-soft">
+                  <div className="flex gap-1 text-gold">
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <Star key={j} size={14} fill="currentColor" strokeWidth={0} />
+                    ))}
+                  </div>
+                  <p className="mt-5 text-body leading-relaxed text-foreground/85">&ldquo;{t.quote}&rdquo;</p>
+                  <div className="mt-6 border-t border-border pt-4">
+                    <p className="text-[14px] font-semibold text-primary">{t.name}</p>
+                    <p className="text-small text-muted-foreground">{t.role}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -153,20 +194,18 @@ export default function Home() {
 
         {/* CTA Section */}
         <section
-          className="relative py-32 bg-cover bg-center bg-fixed"
+          className="relative bg-fixed bg-cover bg-center py-36"
           style={{ backgroundImage: 'url(/assets/biji-kopi.webp)' }}
         >
-          <div className="absolute inset-0 bg-[rgba(44,24,16,0.65)]" />
-          <div className="relative z-10 max-w-[640px] mx-auto px-6 text-center" data-animate="fadeUp">
-            <h2 className="font-['Playfair_Display'] text-[44px] max-md:text-[32px] font-bold text-white">
-              Mari Berkolaborasi
-            </h2>
-            <p className="mt-5 text-[19px] text-[rgba(255,255,255,0.85)] leading-relaxed">
+          <div className="absolute inset-0 bg-primary/70" />
+          <div className="container-brand relative z-10 mx-auto max-w-[640px] text-center" data-animate="fadeUp">
+            <h2 className="font-serif text-heading-1 font-bold text-white">Mari Berkolaborasi</h2>
+            <p className="mt-5 text-body-lg leading-relaxed text-white/80">
               Kami terbuka untuk kerja sama, pemesanan produk, dan dukungan pengembangan peralatan pengolahan kopi. Hubungi kami untuk informasi lebih lanjut.
             </p>
             <Link
               to="/kontak"
-              className="inline-block mt-9 bg-[#5C3D2E] text-white text-[14px] font-semibold uppercase tracking-[0.04em] px-10 py-4 rounded-full hover:bg-[#4A7C59] transition-all duration-200"
+              className="mt-9 inline-block rounded-full bg-white px-10 py-4 text-[13px] font-semibold uppercase tracking-[0.06em] text-primary transition-all duration-200 hover:bg-white/90"
             >
               Hubungi Kami Sekarang
             </Link>
@@ -174,20 +213,18 @@ export default function Home() {
         </section>
 
         {/* Info Strip */}
-        <section className="bg-[#5C3D2E] py-8">
-          <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-[14px] text-[rgba(255,255,255,0.8)] text-center md:text-left">
-              Dikelola oleh Kelompok Tani P4S Ngabei Garden | Pusat Pelatihan Pertanian | Dukuh Sekarang, Desa Trengguli
+        <section className="bg-primary py-7">
+          <div className="container-brand flex flex-col items-center justify-between gap-3 md:flex-row">
+            <p className="text-center text-small text-white/60 md:text-left">
+              Dikelola oleh Kelompok Tani P4S Ngabei Garden | Dukuh Sekarang, Desa Trengguli
             </p>
-            <div className="flex items-center gap-2 text-[14px] text-[rgba(255,255,255,0.8)]">
-              <span className="text-[#6B9E7C]">&#10003;</span>
+            <div className="flex items-center gap-2 text-small text-white/60">
+              <span className="text-gold">&#10003;</span>
               <span>Sertifikat P4S Kelas Pratama — Kementerian Pertanian</span>
             </div>
           </div>
         </section>
       </div>
-
-      <Footer />
     </div>
   )
 }

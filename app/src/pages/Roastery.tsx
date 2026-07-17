@@ -1,7 +1,5 @@
 import { useLayoutEffect } from 'react'
-import { Flame, Settings, Package, GraduationCap } from 'lucide-react'
-import Navigation from '../components/Navigation'
-import Footer from '../components/Footer'
+import { Flame, Settings, Package, GraduationCap, ArrowRight } from 'lucide-react'
 import PageHero from '../components/PageHero'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 
@@ -35,132 +33,115 @@ export default function Roastery() {
     },
   ]
 
+  const kebutuhan = [
+    'Mesin pulper kopi untuk mengupas kulit buah kopi',
+    'Bak fermentasi atau wadah proses pascapanen',
+    'Para-para atau drying bed untuk pengeringan biji kopi',
+    'Mesin huller untuk mengupas kulit tanduk kopi',
+    'Mesin sortasi atau alat grading sederhana',
+    'Moisture meter untuk mengukur kadar air green bean',
+    'Timbangan digital dan perlengkapan pengemasan',
+    'Mesin roasting kopi skala kelompok',
+    'Grinder dan alat pendukung uji seduh',
+    'Sealer kemasan untuk produk roasted bean',
+  ]
+
   return (
     <div>
-      <Navigation />
       <PageHero
-        bgGradient="linear-gradient(135deg, #5C3D2E 0%, #3D2B1F 100%)"
+        bgGradient="linear-gradient(135deg, hsl(20 28% 18%) 0%, hsl(20 32% 10%) 100%)"
         breadcrumb="Mangir Roastery"
         title="Mangir Roastery"
         subtitle="Unit Pengolahan dan Hilirisasi Kopi Tjap Mangir"
       />
 
       <div ref={contentRef}>
-        {/* Profile */}
-        <section className="bg-[#F7F3EE] py-24">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-[45%_55%] gap-16 items-center">
-              <div data-animate="fadeUp" className="flex justify-center">
-                <img
-                  src="/assets/logo-roastery.webp"
-                  alt="Logo Mangir Roastery"
-                  className="max-w-[320px] w-full rounded-xl shadow-[0_4px_24px_rgba(44,24,16,0.08)]"
-                />
-              </div>
-              <div data-animate="fadeUp">
-                <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                  Unit Pengolahan
-                </p>
-                <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E] leading-tight">
-                  Mangir Roastery
-                </h2>
-                <p className="mt-5 text-[19px] text-[#2C1810] leading-relaxed">
-                  Mangir Roastery adalah unit pengolahan kopi yang dikembangkan sebagai bagian dari hilirisasi produk Kopi Tjap Mangir. Roastery ini menjadi tempat pengolahan biji kopi hasil panen dari kebun Bukit Mangir menjadi roasted bean berkualitas.
-                </p>
-                <p className="mt-4 text-[17px] text-[#2C1810] leading-relaxed">
-                  Melalui roastery ini, kami berencana melakukan proses roasting dengan standar yang konsisten untuk menghasilkan profil rasa khas dari masing-masing jenis kopi — Arabica, Robusta, dan Liberika.
-                </p>
-              </div>
+        <section className="bg-background py-24">
+          <div className="container-brand grid grid-cols-1 items-center gap-16 lg:grid-cols-[42%_58%]">
+            <div data-animate="fadeUp" className="flex justify-center">
+              <img
+                src="/assets/logo-roastery.webp"
+                alt="Logo Mangir Roastery"
+                className="w-full max-w-[300px] rounded-3xl shadow-card"
+              />
+            </div>
+            <div data-animate="fadeUp">
+              <p className="text-caption text-accent">Unit Pengolahan</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold leading-tight text-primary">
+                Mangir Roastery
+              </h2>
+              <p className="mt-5 text-body-lg leading-relaxed text-foreground/85">
+                Mangir Roastery adalah unit pengolahan kopi yang dikembangkan sebagai bagian dari hilirisasi produk Kopi Tjap Mangir. Roastery ini menjadi tempat pengolahan biji kopi hasil panen dari kebun Bukit Mangir menjadi roasted bean berkualitas.
+              </p>
+              <p className="mt-4 text-body leading-relaxed text-foreground/70">
+                Melalui roastery ini, kami berencana melakukan proses roasting dengan standar yang konsisten untuk menghasilkan profil rasa khas dari masing-masing jenis kopi — Arabica, Robusta, dan Liberika.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section className="bg-white py-24">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E] text-center mb-14" data-animate="fadeUp">
+        <section className="bg-secondary/40 py-24">
+          <div className="container-brand">
+            <h2 className="mb-14 text-center font-serif text-heading-1 font-bold text-primary" data-animate="fadeUp">
               Fasilitas & Rencana Pengembangan
             </h2>
-            <div data-animate="staggerFadeUp" className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div data-animate="staggerFadeUp" className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {features.map((f) => (
-                <div
-                  key={f.title}
-                  // 2. Ganti transition-all menjadi transition-shadow agar tidak bentrok dengan GSAP
-                  className="bg-[#F7F3EE] rounded-xl p-10 hover:shadow-[0_8px_32px_rgba(44,24,16,0.12)] transition-shadow duration-300"
-                >
-                  <f.icon size={40} className="text-[#4A7C59] mb-5" strokeWidth={1.5} />
-                  <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E]">
-                    {f.title}
-                  </h3>
-                  <p className="mt-2.5 text-[15px] text-[#6B5B4F] leading-relaxed">
-                    {f.desc}
-                  </p>
+                <div key={f.title} className="rounded-3xl bg-card p-9 shadow-soft transition-shadow duration-300 hover:shadow-lifted">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10">
+                    <f.icon size={22} className="text-accent" strokeWidth={1.6} />
+                  </div>
+                  <h3 className="mt-5 font-serif text-heading-3 font-semibold text-primary">{f.title}</h3>
+                  <p className="mt-2.5 text-small leading-relaxed text-muted-foreground">{f.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="bg-[#5C3D2E] py-20">
-          <div className="max-w-[800px] mx-auto px-6 text-center" data-animate="fadeUp">
-            <h2 className="font-['Playfair_Display'] text-[40px] max-md:text-[28px] font-bold text-white">
+        <section className="bg-primary py-20">
+          <div className="mx-auto max-w-[800px] px-6 text-center" data-animate="fadeUp">
+            <h2 className="font-serif text-heading-1 font-bold text-white">
               Dukung Pengembangan Roastery Kami
             </h2>
-            <p className="mt-5 text-[19px] text-[rgba(255,255,255,0.85)] leading-relaxed">
+            <p className="mt-5 text-body-lg leading-relaxed text-white/80">
               Untuk mewujudkan Mangir Roastery, kami membutuhkan dukungan peralatan pengolahan kopi. Bantuan ini akan membantu petani mengolah hasil panen menjadi produk bernilai tambah.
             </p>
             <a
               href="#kebutuhan"
-              className="inline-block mt-8 border-2 border-[rgba(255,255,255,0.5)] text-white text-[14px] font-semibold uppercase tracking-[0.04em] px-8 py-3.5 rounded-full hover:border-white hover:bg-[rgba(255,255,255,0.1)] transition-colors duration-200"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border-2 border-white/40 px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-white transition-colors duration-200 hover:border-white hover:bg-white/10"
             >
-              Lihat Kebutuhan Peralatan &rarr;
+              Lihat Kebutuhan Peralatan
+              <ArrowRight size={15} />
             </a>
           </div>
         </section>
 
-        {/* Kebutuhan Peralatan */}
-        <section id="kebutuhan" className="bg-[#F7F3EE] py-24">
-          <div className="max-w-[1000px] mx-auto px-6">
-            <div className="text-center mb-14" data-animate="fadeUp">
-              <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                Kebutuhan Peralatan
-              </p>
-              <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E]">
+        <section id="kebutuhan" className="bg-background py-24">
+          <div className="mx-auto max-w-[1000px] px-6">
+            <div className="mb-14 text-center" data-animate="fadeUp">
+              <p className="text-caption text-accent">Kebutuhan Peralatan</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
                 Peralatan yang Dibutuhkan
               </h2>
-              <p className="mt-4 text-[17px] text-[#6B5B4F]">
+              <p className="mt-4 text-body-lg text-muted-foreground">
                 Untuk memperkuat pengembangan Kopi Tjap Mangir, kami membutuhkan dukungan peralatan pengolahan kopi berikut:
               </p>
             </div>
 
-            <div data-animate="staggerFadeUp" className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                'Mesin pulper kopi untuk mengupas kulit buah kopi',
-                'Bak fermentasi atau wadah proses pascapanen',
-                'Para-para atau drying bed untuk pengeringan biji kopi',
-                'Mesin huller untuk mengupas kulit tanduk kopi',
-                'Mesin sortasi atau alat grading sederhana',
-                'Moisture meter untuk mengukur kadar air green bean',
-                'Timbangan digital dan perlengkapan pengemasan',
-                'Mesin roasting kopi skala kelompok',
-                'Grinder dan alat pendukung uji seduh',
-                'Sealer kemasan untuk produk roasted bean',
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-lg p-4 flex items-start gap-3 shadow-[0_2px_12px_rgba(44,24,16,0.06)]"
-                >
-                  <span className="text-[#4A7C59] font-bold text-[16px] flex-shrink-0 mt-0.5">{i + 1}.</span>
-                  <p className="text-[15px] text-[#2C1810]">{item}</p>
+            <div data-animate="staggerFadeUp" className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {kebutuhan.map((item, i) => (
+                <div key={i} className="flex items-start gap-4 rounded-2xl bg-card p-5 shadow-soft">
+                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent/10 text-[13px] font-bold text-accent">
+                    {i + 1}
+                  </span>
+                  <p className="text-[15px] text-foreground/85">{item}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
       </div>
-
-      <Footer />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router'
+import Layout from './components/Layout'
 import Home from './pages/Home'
 import Tentang from './pages/Tentang'
 import Kebun from './pages/Kebun'
@@ -18,18 +19,23 @@ import KebunForm from './pages/admin/KebunForm'
 import GaleriAdmin from './pages/admin/GaleriAdmin'
 import KebunGaleriAdmin from './pages/admin/KebunGaleriAdmin'
 
-
+// Semua URL path di bawah ini identik dengan sebelumnya — hanya kerangka
+// Navigation/Footer yang sekarang dibungkus satu Layout (fixes audit A1),
+// bukan diimpor manual di tiap halaman.
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/tentang" element={<Tentang />} />
-      <Route path="/kebun" element={<Kebun />} />
-      <Route path="/produk" element={<Produk />} />
-      <Route path="/roastery" element={<Roastery />} />
-      <Route path="/cafe" element={<Cafe />} />
-      <Route path="/galeri" element={<Galeri />} />
-      <Route path="/kontak" element={<Kontak />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/tentang" element={<Tentang />} />
+        <Route path="/kebun" element={<Kebun />} />
+        <Route path="/produk" element={<Produk />} />
+        <Route path="/roastery" element={<Roastery />} />
+        <Route path="/cafe" element={<Cafe />} />
+        <Route path="/galeri" element={<Galeri />} />
+        <Route path="/kontak" element={<Kontak />} />
+      </Route>
+
       <Route path="/admin" element={<AdminLogin />} />
       <Route
         path="/admin/dashboard"
@@ -46,7 +52,7 @@ export default function App() {
       <Route path="/admin/kebun/tambah" element={<ProtectedRoute><KebunForm /></ProtectedRoute>} />
       <Route path="/admin/kebun/edit/:id" element={<ProtectedRoute><KebunForm /></ProtectedRoute>} />
       <Route path="/admin/galeri" element={<ProtectedRoute><GaleriAdmin /></ProtectedRoute>} />
-       <Route path="/admin/kebun-galeri" element={<ProtectedRoute><KebunGaleriAdmin /></ProtectedRoute>} />
+      <Route path="/admin/kebun-galeri" element={<ProtectedRoute><KebunGaleriAdmin /></ProtectedRoute>} />
     </Routes>
   )
 }

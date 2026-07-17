@@ -17,3 +17,8 @@ export function generateWhatsAppLink(items: CartItem[], note: string): string {
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
 }
+
+export function getWhatsAppContactLink(presetMessage?: string): string {
+  const text = presetMessage ?? 'Halo, saya ingin bertanya tentang Kopi Tjap Mangir.'
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`
+}

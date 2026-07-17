@@ -1,31 +1,18 @@
 import { useEffect, useState } from 'react'
-import Navigation from '../components/Navigation'
-import Footer from '../components/Footer'
+import { toast } from 'sonner'
 import PageHero from '../components/PageHero'
+import ProductDetailSheet from '../components/ProductDetailSheet'
+import { Skeleton } from '../components/ui/skeleton'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { supabase } from '../lib/supabase'
 import { useCart } from '@/context/CartContext'
-
-interface Variant {
-  id: string
-  size: string
-  price: number
-  stock: number
-}
-
-interface Product {
-  id: string
-  name: string
-  description: string
-  category: string
-  image_url: string
-  product_variants: Variant[]
-}
+import type { Product } from '@/types'
 
 export default function Produk() {
   const contentRef = useScrollAnimation()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeProduct, setActiveProduct] = useState<Product | null>(null)
 
   const { addItem } = useCart()
   const [selectedVariant, setSelectedVariant] = useState<Record<string, string>>({})
@@ -35,7 +22,7 @@ export default function Produk() {
     const variant = product.product_variants.find((v) => v.id === variantId)
 
     if (!variant) {
-      alert('Pilih ukuran dulu ya')
+      toast.error('Pilih ukuran dulu ya')
       return
     }
 
@@ -45,6 +32,9 @@ export default function Produk() {
       variantId: variant.id,
       size: variant.size,
       price: variant.price,
+    })
+    toast.success(`${product.name} ditambahkan ke keranjang`, {
+      description: variant.size,
     })
   }
 
@@ -73,7 +63,6 @@ export default function Produk() {
 
   return (
     <div>
-      <Navigation />
       <PageHero
         bgImage="/assets/biji-kopi.webp"
         breadcrumb="Produk"
@@ -83,130 +72,144 @@ export default function Produk() {
 
       <div ref={contentRef}>
         {/* Overview */}
-        <section className="bg-[#F7F3EE] py-24">
-          <div className="max-w-[720px] mx-auto px-6 text-center" data-animate="fadeUp">
-            <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-              Produk Kami
-            </p>
-            <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E] leading-tight">
+        <section className="bg-background py-24">
+          <div className="mx-auto max-w-[720px] px-6 text-center" data-animate="fadeUp">
+            <p className="text-caption text-accent">Produk Kami</p>
+            <h2 className="mt-4 font-serif text-heading-1 font-bold leading-tight text-primary">
               Tiga Jenis Kopi, Satu Kualitas
             </h2>
-            <p className="mt-5 text-[19px] text-[#2C1810] leading-relaxed">
+            <p className="mt-5 text-body-lg leading-relaxed text-foreground/80">
               Kopi Tjap Mangir mengembangkan tiga jenis kopi — Arabica, Robusta, dan Liberika. Masing-masing memiliki karakter rasa unik dan diproses menjadi green bean maupun roasted bean untuk memenuhi kebutuhan pasar yang beragam.
             </p>
           </div>
         </section>
 
         {/* Product Cards */}
-        <section className="bg-white pb-24 pt-24">
-          <div className="max-w-[1200px] mx-auto px-6">
-          {loading ? (
-            <div className="flex justify-center items-center h-40">
-              <p className="text-[#6B5B4F] text-lg font-medium animate-pulse">Memuat koleksi kopi...</p>
-            </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-[#6B5B4F] text-lg">Belum ada koleksi kopi saat ini.</p>
-            </div>
-          ) : (
-            <div data-animate="staggerFadeUp" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-              {products.map((p) => (
-                <div
-                  key={p.id}
-                  className="group flex flex-col bg-[#FCFAF8] border border-[#F0EAE1] rounded-2xl overflow-hidden hover:shadow-[0_12px_40px_rgba(44,24,16,0.08)] hover:-translate-y-2 transition-all duration-500"
-                >
-                  {/* Bagian Gambar */}
-                  <div className="relative h-[280px] bg-[#E8DFD5] overflow-hidden">
-                    <img
-                      src={p.image_url}
-                      alt={`Biji kopi ${p.name}`}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                    />
-                    
-                    {/* Badge Kategori Melayang di atas gambar */}
-                    {p.category && (
-                      <div className="absolute top-4 left-4 z-10">
-                        <span className="bg-white/85 backdrop-blur-sm text-[#4A7C59] text-[11px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">
-                          {p.category}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Bagian Konten */}
-                  <div className="flex flex-col flex-grow p-7">
-                    <div className="flex-grow">
-                      <h3 className="font-['Playfair_Display'] text-[28px] font-bold text-[#3A261D] leading-tight group-hover:text-[#4A7C59] transition-colors duration-300">
-                        {p.name}
-                      </h3>
-                      <p className="mt-3 text-[14px] text-[#7A6A5E] leading-relaxed line-clamp-3">
-                        {p.description}
-                      </p>
+        <section className="bg-secondary/40 pb-24 pt-4">
+          <div className="container-brand">
+            {loading ? (
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10 lg:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="overflow-hidden rounded-3xl border border-border bg-card">
+                    <Skeleton className="h-[280px] w-full rounded-none" />
+                    <div className="space-y-3 p-7">
+                      <Skeleton className="h-6 w-2/3" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-4/5" />
+                      <Skeleton className="mt-4 h-11 w-full rounded-xl" />
+                      <Skeleton className="h-11 w-full rounded-xl" />
                     </div>
+                  </div>
+                ))}
+              </div>
+            ) : products.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="text-body-lg text-muted-foreground">Belum ada koleksi kopi saat ini.</p>
+              </div>
+            ) : (
+              <div data-animate="staggerFadeUp" className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10 lg:grid-cols-3">
+                {products.map((p) => {
+                  const minPrice = Math.min(...p.product_variants.map((v) => v.price))
+                  const selected = p.product_variants.find((v) => v.id === selectedVariant[p.id])
+                  return (
+                    <div
+                      key={p.id}
+                      className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all duration-500 hover:-translate-y-2 hover:shadow-lifted"
+                    >
+                      <button
+                        onClick={() => setActiveProduct(p)}
+                        className="relative h-[280px] overflow-hidden bg-secondary text-left"
+                      >
+                        <img
+                          src={p.image_url}
+                          alt={`Biji kopi ${p.name}`}
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                        />
+                        {p.category && (
+                          <span className="absolute left-4 top-4 rounded-full bg-white/90 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-accent shadow-sm">
+                            {p.category}
+                          </span>
+                        )}
+                        <span className="absolute inset-x-4 bottom-4 translate-y-2 rounded-full bg-primary/90 py-2 text-center text-[12px] font-semibold text-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                          Lihat Detail
+                        </span>
+                      </button>
 
-                    {/* Varian & Harga (Selalu di bawah) */}
-                    <div className="mt-6 pt-6 border-t border-[#F0EAE1]/80">
-                      <div className="relative">
-                        <select
-                          value={selectedVariant[p.id] || ''}
-                          onChange={(e) => setSelectedVariant({ ...selectedVariant, [p.id]: e.target.value })}
-                          className="w-full appearance-none bg-white border border-[#E1D7CE] text-[#3A261D] rounded-xl px-4 py-3 text-[14px] font-medium outline-none focus:ring-2 focus:ring-[#5C3D2E]/20 focus:border-[#5C3D2E] transition-all cursor-pointer shadow-sm"
-                        >
-                          <option value="" disabled className="text-gray-400">Pilih ukuran</option>
-                          {p.product_variants.map((v) => (
-                            <option key={v.id} value={v.id}>
-                              {v.size} — Rp{v.price.toLocaleString('id-ID')}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#7A6A5E]">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                          </svg>
+                      <div className="flex flex-1 flex-col p-7">
+                        <div className="flex-1">
+                          <h3 className="font-serif text-heading-3 font-bold leading-tight text-primary transition-colors group-hover:text-accent">
+                            {p.name}
+                          </h3>
+                          <p className="mt-2 text-[15px] font-semibold text-accent">
+                            Mulai dari Rp{minPrice.toLocaleString('id-ID')}
+                          </p>
+                          <p className="mt-3 line-clamp-2 text-small leading-relaxed text-muted-foreground">
+                            {p.description}
+                          </p>
+                        </div>
+
+                        <div className="mt-6 border-t border-border pt-5">
+                          <div className="flex flex-wrap gap-2">
+                            {p.product_variants.map((v) => {
+                              const outOfStock = v.stock <= 0
+                              const isSelected = selectedVariant[p.id] === v.id
+                              return (
+                                <button
+                                  key={v.id}
+                                  disabled={outOfStock}
+                                  onClick={() => setSelectedVariant({ ...selectedVariant, [p.id]: v.id })}
+                                  className={`rounded-xl border px-3.5 py-2 text-[12.5px] font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
+                                    isSelected
+                                      ? 'border-accent bg-accent/10 text-accent'
+                                      : 'border-border text-foreground/70 hover:border-accent/50'
+                                  }`}
+                                >
+                                  {v.size}
+                                </button>
+                              )
+                            })}
+                          </div>
+                          {selected && (
+                            <p className={`mt-2 text-[11.5px] font-medium ${selected.stock <= 5 ? 'text-gold' : 'text-muted-foreground'}`}>
+                              {selected.stock <= 5 ? `Stok terbatas: ${selected.stock}` : `Stok tersedia \u00b7 Rp${selected.price.toLocaleString('id-ID')}`}
+                            </p>
+                          )}
+                          <button
+                            onClick={() => handleAddToCart(p)}
+                            className="mt-4 w-full rounded-xl bg-accent py-3.5 text-[13px] font-bold uppercase tracking-widest text-accent-foreground transition-all duration-300 hover:brightness-105 active:scale-[0.98]"
+                          >
+                            Tambah ke Keranjang
+                          </button>
                         </div>
                       </div>
-                      <button
-                        onClick={() => handleAddToCart(p)}
-                        className="w-full mt-3 bg-[#3A261D] text-white text-[13px] font-bold uppercase tracking-widest py-3.5 rounded-xl hover:bg-[#4A7C59] hover:shadow-lg active:scale-[0.98] transition-all duration-300"
-                      >
-                        Tambah ke Keranjang
-                      </button>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                  )
+                })}
+              </div>
+            )}
           </div>
-         </section>
+        </section>
 
         {/* Pengolahan */}
-        <section className="bg-[#F7F3EE] py-24">
-          <div className="max-w-[1000px] mx-auto px-6">
-            <div className="text-center mb-14" data-animate="fadeUp">
-              <p className="text-[13px] font-medium uppercase tracking-[0.04em] text-[#4A7C59] mb-4">
-                Pengolahan
-              </p>
-              <h2 className="font-['Playfair_Display'] text-[48px] max-md:text-[32px] font-bold text-[#5C3D2E]">
+        <section className="bg-background py-24">
+          <div className="mx-auto max-w-[1000px] px-6">
+            <div className="mb-14 text-center" data-animate="fadeUp">
+              <p className="text-caption text-accent">Pengolahan</p>
+              <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
                 Dari Biji Kopi Sampai Siap Dinikmati
               </h2>
             </div>
 
-            <div data-animate="staggerFadeUp" className="flex flex-col md:flex-row items-start justify-between gap-8 relative">
-              {/* Connecting line - desktop only */}
-              <div className="hidden md:block absolute top-6 left-[12.5%] right-[12.5%] h-[2px] border-t-2 border-dashed border-[#E8DFD5]" />
+            <div data-animate="staggerFadeUp" className="relative flex flex-col items-start justify-between gap-8 md:flex-row">
+              <div className="absolute left-[12.5%] right-[12.5%] top-6 hidden h-[2px] border-t-2 border-dashed border-border md:block" />
 
               {processSteps.map((s) => (
-                <div key={s.num} className="flex-1 flex flex-col items-center text-center relative z-10">
-                  <div className="w-12 h-12 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center font-['Playfair_Display'] text-[20px] font-bold">
+                <div key={s.num} className="relative z-10 flex flex-1 flex-col items-center text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-serif text-[18px] font-bold text-primary-foreground">
                     {s.num}
                   </div>
-                  <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5C3D2E] mt-4">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2 text-[14px] text-[#6B5B4F] leading-relaxed max-w-[200px]">
-                    {s.desc}
-                  </p>
+                  <h3 className="mt-4 font-serif text-heading-3 font-semibold text-primary">{s.title}</h3>
+                  <p className="mt-2 max-w-[200px] text-small leading-relaxed text-muted-foreground">{s.desc}</p>
                 </div>
               ))}
             </div>
@@ -214,7 +217,7 @@ export default function Produk() {
         </section>
       </div>
 
-      <Footer />
+      <ProductDetailSheet product={activeProduct} onClose={() => setActiveProduct(null)} />
     </div>
   )
 }
