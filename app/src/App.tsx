@@ -20,9 +20,7 @@ import GaleriAdmin from './pages/admin/GaleriAdmin'
 import KebunGaleriAdmin from './pages/admin/KebunGaleriAdmin'
 import TestimoniAdmin from './pages/admin/TestimoniAdmin'
 
-// Semua URL path di bawah ini identik dengan sebelumnya — hanya kerangka
-// Navigation/Footer yang sekarang dibungkus satu Layout (fixes audit A1),
-// bukan diimpor manual di tiap halaman.
+
 export default function App() {
   return (
     <Routes>

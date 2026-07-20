@@ -37,7 +37,7 @@ export default function Navigation() {
     setMobileOpen(false)
   }, [location.pathname])
 
-  // Kecil, tapi memberi kepastian visual instan saat isi cart bertambah dari halaman manapun.
+
   useEffect(() => {
     if (totalItems === 0) return
     setBump(true)

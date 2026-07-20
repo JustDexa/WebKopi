@@ -23,7 +23,6 @@ export default function KebunForm() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  // Kalau mode Edit, load data existing dulu
   useEffect(() => {
     if (!isEditMode) return
 
@@ -103,7 +102,7 @@ export default function KebunForm() {
         if (insertError) throw insertError
       }
 
-      navigate('/admin/kebun')
+      navigate('/admin/kebun', { replace: true })
     } catch (err) {
       console.error(err)
       setError('Gagal menyimpan data.')
@@ -126,7 +125,7 @@ export default function KebunForm() {
   return (
     <div className="min-h-screen bg-[#FCFAF8] p-6 md:p-12 relative">
       <div className="max-w-[900px] mx-auto">
-        <BackButton />
+        <BackButton to="/admin/kebun" />
         
         <header className="mb-10 mt-2">
           <h1 className="font-['Playfair_Display'] text-[36px] font-bold text-[#3A261D]">

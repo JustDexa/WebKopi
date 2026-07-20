@@ -5,14 +5,7 @@ const PROCESSED_ATTR = 'data-observed'
 const REVEALED_CLASS = 'is-revealed'
 const STAGGER_STEP_MS = 90
 
-// Reveals [data-animate] elements as they scroll into view using
-// IntersectionObserver — a browser-native API that reacts to an element's
-// *actual current* position every time the browser recalculates layout.
-// This intentionally avoids libraries that cache a pixel position once and
-// require manual "refresh" calls to stay correct (e.g. GSAP ScrollTrigger),
-// which is what caused sections to stay stuck invisible until a hard reload
-// whenever an image, font, or async-fetched card shifted the page's layout
-// after that one-time measurement.
+
 export function useScrollAnimation() {
   const ref = useRef<HTMLDivElement>(null)
 

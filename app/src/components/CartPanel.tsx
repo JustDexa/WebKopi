@@ -28,8 +28,6 @@ export default function CartPanel({ isOpen, onClose }: CartPanelProps) {
     if (items.length === 0) return
     const link = generateWhatsAppLink(items, note)
     window.open(link, '_blank')
-    // Auto-clear setelah membuka WhatsApp (fixes audit C5) — mencegah
-    // pesanan lama ikut terkirim ulang di sesi belanja berikutnya.
     clearCart()
     setNote('')
     toast.success('Pesanan dikirim ke WhatsApp, keranjang telah dikosongkan.')

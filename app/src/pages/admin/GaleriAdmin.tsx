@@ -16,8 +16,7 @@ export default function GaleriAdmin() {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
-  
-  // State untuk custom alert/modal hapus
+
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null)
 
   const fetchImages = async () => {
@@ -114,7 +113,7 @@ export default function GaleriAdmin() {
 
     <div className="max-w-[1200px] mx-auto">
         
-        <BackButton />
+        <BackButton to="/admin/dashboard" />
 
         <header className="mb-10">
           <h1 className="font-['Playfair_Display'] text-[36px] font-bold text-[#3A261D]">

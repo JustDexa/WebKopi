@@ -113,7 +113,7 @@ export default function KebunGaleriAdmin() {
       )}
 
       <div className="max-w-[1200px] mx-auto">
-        <BackButton />
+        <BackButton to="/admin/dashboard" />
         <header className="mb-10">
           <h1 className="font-['Playfair_Display'] text-[36px] font-bold text-[#3A261D] mb-3">
             Kelola Galeri Kebun

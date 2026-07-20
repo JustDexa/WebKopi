@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import BackButton from '@/components/ui/BackButton'
 
 interface VariantInput {
-  id?: string  // ada id kalau varian lama, kosong kalau baru ditambah
+  id?: string 
   size: string
   price: string
   stock: string
@@ -146,7 +146,7 @@ export default function ProdukEdit() {
         if (variantError) throw variantError
       }
 
-      navigate('/admin/produk')
+      navigate('/admin/produk', { replace: true })
     } catch (err) {
       console.error(err)
       setError('Gagal menyimpan perubahan.')
@@ -159,7 +159,7 @@ export default function ProdukEdit() {
 
   return (
     <div className="min-h-screen bg-[#F7F3EE] p-10">
-      <BackButton />
+      <BackButton to="/admin/produk" />
       <h1 className="font-['Playfair_Display'] text-[28px] font-bold text-[#5C3D2E] mb-6">
         Edit Produk
       </h1>

@@ -39,8 +39,7 @@ function loadInitialItems(): CartItem[] {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(loadInitialItems)
 
-  // Sinkronkan ke localStorage setiap kali cart berubah, supaya user yang
-  // pindah tab ke WhatsApp lalu balik lagi tidak kehilangan keranjangnya.
+  // Sinkronkan ke localStorage setiap kali cart berubah
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items))

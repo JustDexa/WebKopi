@@ -90,7 +90,7 @@ export default function ProdukForm() {
 
       // 3. Insert semua varian, pakai product_id dari langkah 2
       const variantsToInsert = variants
-        .filter((v) => v.size && v.price) // buang baris kosong
+        .filter((v) => v.size && v.price)
         .map((v) => ({
           product_id: productData.id,
           size: v.size,
@@ -104,7 +104,7 @@ export default function ProdukForm() {
 
       if (variantError) throw variantError
 
-      navigate('/admin/produk')
+      navigate('/admin/produk', { replace: true })
     } catch (err) {
       console.error(err)
       setError('Gagal menyimpan produk. Cek console untuk detail.')
@@ -119,7 +119,7 @@ export default function ProdukForm() {
   return (
     <div className="min-h-screen bg-[#FCFAF8] p-6 md:p-12 relative">
       <div className="max-w-[900px] mx-auto">
-        <BackButton />
+        <BackButton to="/admin/produk" />
         
         <header className="mb-10 mt-2">
           <h1 className="font-['Playfair_Display'] text-[36px] font-bold text-[#3A261D]">

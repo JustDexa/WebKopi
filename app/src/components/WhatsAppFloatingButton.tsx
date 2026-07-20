@@ -1,8 +1,6 @@
 import { MessageCircle } from 'lucide-react'
 import { getWhatsAppContactLink } from '@/lib/whatsapp'
 
-// Persistent, low-friction path to the site's core business goal.
-// Purely additive — does not touch the cart checkout flow or WA link logic.
 export default function WhatsAppFloatingButton() {
   return (
     <a

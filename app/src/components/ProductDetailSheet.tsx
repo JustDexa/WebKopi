@@ -9,9 +9,6 @@ interface ProductDetailSheetProps {
   onClose: () => void
 }
 
-// Closes audit gap C1: a real "detail produk" view (full description, process,
-// stock-aware variant picker) — additive only, doesn't touch routing or the
-// add-to-cart business logic, which stays identical to the card flow.
 export default function ProductDetailSheet({ product, onClose }: ProductDetailSheetProps) {
   const { addItem } = useCart()
   const [variantId, setVariantId] = useState<string>('')

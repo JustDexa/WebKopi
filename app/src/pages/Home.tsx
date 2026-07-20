@@ -12,8 +12,6 @@ export default function Home() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
 
   useEffect(() => {
-    // Testimoni diatur lewat Admin > Testimoni, bukan hardcode — supaya
-    // bisa ditambah/diubah tanpa perlu deploy ulang kode.
     const fetchTestimonials = async () => {
       const { data, error } = await supabase
         .from('testimonials')
