@@ -5,6 +5,11 @@ export interface Variant {
   stock: number
 }
 
+export interface ProcessStep {
+  title: string
+  description: string
+}
+
 export interface Product {
   id: string
   name: string
@@ -12,6 +17,16 @@ export interface Product {
   category: string
   image_url: string
   product_variants: Variant[]
+  process_steps: ProcessStep[]
+}
+
+export interface Testimonial {
+  id: string
+  name: string
+  role: string
+  quote: string
+  rating: number
+  urutan_tampil: number
 }
 
 export interface KebunInfo {

@@ -18,6 +18,7 @@ import KebunAdmin from './pages/admin/KebunAdmin'
 import KebunForm from './pages/admin/KebunForm'
 import GaleriAdmin from './pages/admin/GaleriAdmin'
 import KebunGaleriAdmin from './pages/admin/KebunGaleriAdmin'
+import TestimoniAdmin from './pages/admin/TestimoniAdmin'
 
 // Semua URL path di bawah ini identik dengan sebelumnya — hanya kerangka
 // Navigation/Footer yang sekarang dibungkus satu Layout (fixes audit A1),
@@ -53,6 +54,7 @@ export default function App() {
       <Route path="/admin/kebun/edit/:id" element={<ProtectedRoute><KebunForm /></ProtectedRoute>} />
       <Route path="/admin/galeri" element={<ProtectedRoute><GaleriAdmin /></ProtectedRoute>} />
       <Route path="/admin/kebun-galeri" element={<ProtectedRoute><KebunGaleriAdmin /></ProtectedRoute>} />
+      <Route path="/admin/testimoni" element={<ProtectedRoute><TestimoniAdmin /></ProtectedRoute>} />
     </Routes>
   )
 }

@@ -10,6 +10,11 @@ interface VariantInput {
   stock: string
 }
 
+interface ProcessStepInput {
+  title: string
+  description: string
+}
+
 export default function ProdukEdit() {
   const { id } = useParams()  // ambil ID produk dari URL, misal /admin/produk/edit/abc123
   const navigate = useNavigate()
@@ -20,6 +25,7 @@ export default function ProdukEdit() {
   const [imageUrl, setImageUrl] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [variants, setVariants] = useState<VariantInput[]>([])
+  const [processSteps, setProcessSteps] = useState<ProcessStepInput[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -52,6 +58,12 @@ export default function ProdukEdit() {
           stock: String(v.stock),
         }))
       )
+      setProcessSteps(
+        Array.isArray(data.process_steps)
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            data.process_steps.map((s: any) => ({ title: s.title || '', description: s.description || '' }))
+          : []
+      )
       setLoading(false)
     }
 
@@ -70,6 +82,20 @@ export default function ProdukEdit() {
     const updated = [...variants]
     updated[index][field] = value
     setVariants(updated)
+  }
+
+  const addStepRow = () => {
+    setProcessSteps([...processSteps, { title: '', description: '' }])
+  }
+
+  const removeStepRow = (index: number) => {
+    setProcessSteps(processSteps.filter((_, i) => i !== index))
+  }
+
+  const updateStep = (index: number, field: keyof ProcessStepInput, value: string) => {
+    const updated = [...processSteps]
+    updated[index][field] = value
+    setProcessSteps(updated)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,9 +118,11 @@ export default function ProdukEdit() {
       }
 
       // 2. Update data produk
+      const stepsToSave = processSteps.filter((s) => s.title.trim() && s.description.trim())
+
       const { error: updateError } = await supabase
         .from('products')
-        .update({ name, description, category, image_url: finalImageUrl })
+        .update({ name, description, category, image_url: finalImageUrl, process_steps: stepsToSave })
         .eq('id', id)
       if (updateError) throw updateError
 
@@ -209,6 +237,39 @@ export default function ProdukEdit() {
           ))}
           <button type="button" onClick={addVariantRow} className="text-sm text-[#4A7C59] hover:underline">
             + Tambah varian lain
+          </button>
+        </div>
+
+        <div className="pt-2 border-t border-[#F0EAE1]">
+          <label className="block text-sm font-medium mb-1 mt-4">Langkah Pengolahan</label>
+          <p className="text-xs text-[#6B5B4F] mb-3">
+            Ditampilkan di panel Detail Produk saat pelanggan klik produk ini. Boleh dikosongkan.
+          </p>
+          {processSteps.map((s, i) => (
+            <div key={i} className="flex gap-2 mb-3 items-start">
+              <span className="mt-2.5 text-xs font-bold text-[#5C3D2E] w-5 shrink-0">{i + 1}.</span>
+              <div className="flex-1 space-y-2">
+                <input
+                  placeholder="Judul langkah"
+                  value={s.title}
+                  onChange={(e) => updateStep(i, 'title', e.target.value)}
+                  className="w-full border rounded-md px-3 py-2"
+                />
+                <textarea
+                  placeholder="Deskripsi langkah"
+                  value={s.description}
+                  onChange={(e) => updateStep(i, 'description', e.target.value)}
+                  rows={2}
+                  className="w-full border rounded-md px-3 py-2"
+                />
+              </div>
+              <button type="button" onClick={() => removeStepRow(i)} className="text-red-600 px-2 mt-2.5">
+                ✕
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addStepRow} className="text-sm text-[#4A7C59] hover:underline">
+            + Tambah langkah lain
           </button>
         </div>
 

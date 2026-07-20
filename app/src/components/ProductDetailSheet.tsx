@@ -9,13 +9,6 @@ interface ProductDetailSheetProps {
   onClose: () => void
 }
 
-const processSteps = [
-  { num: '1', title: 'Sortasi & Pulping', desc: 'Pemilahan dan pengupasan kulit buah kopi.' },
-  { num: '2', title: 'Fermentasi & Cuci', desc: 'Proses fermentasi dan pencucian biji kopi.' },
-  { num: '3', title: 'Pengeringan', desc: 'Pengeringan di para-para hingga kadar air ideal.' },
-  { num: '4', title: 'Roasting', desc: 'Pemanggangan biji kopi di Mangir Roastery.' },
-]
-
 // Closes audit gap C1: a real "detail produk" view (full description, process,
 // stock-aware variant picker) — additive only, doesn't touch routing or the
 // add-to-cart business logic, which stays identical to the card flow.
@@ -150,23 +143,26 @@ export default function ProductDetailSheet({ product, onClose }: ProductDetailSh
             Tambah ke Keranjang
           </button>
 
-          {/* Process storytelling */}
-          <div className="mt-12 border-t border-border pt-8">
-            <p className="text-caption text-muted-foreground">Proses Pengolahan</p>
-            <div className="mt-5 space-y-4">
-              {processSteps.map((s) => (
-                <div key={s.num} className="flex gap-4">
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary font-serif text-[13px] font-bold text-primary-foreground">
-                    {s.num}
+          {/* Process storytelling — sekarang diatur per-produk lewat Admin > Produk,
+              bukan hardcode. Section disembunyikan kalau admin belum mengisi langkahnya. */}
+          {product.process_steps && product.process_steps.length > 0 && (
+            <div className="mt-12 border-t border-border pt-8">
+              <p className="text-caption text-muted-foreground">Proses Pengolahan</p>
+              <div className="mt-5 space-y-4">
+                {product.process_steps.map((s, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary font-serif text-[13px] font-bold text-primary-foreground">
+                      {i + 1}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">{s.title}</p>
+                      <p className="text-small text-muted-foreground">{s.description}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground">{s.title}</p>
-                    <p className="text-small text-muted-foreground">{s.desc}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

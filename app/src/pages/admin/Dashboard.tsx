@@ -1,6 +1,6 @@
 import { useAuth } from '../../context/AuthContext'
 import { Link, useNavigate } from 'react-router'
-import { Package, Sprout, Image, Images, LogOut, ExternalLink } from 'lucide-react'
+import { Package, Sprout, Image, Images, MessageSquareQuote, LogOut, ExternalLink } from 'lucide-react'
 
 const menuItems = [
   {
@@ -26,6 +26,12 @@ const menuItems = [
     icon: Images,
     title: 'Galeri Kebun',
     desc: 'Foto tambahan di section galeri halaman Kebun',
+  },
+  {
+    to: '/admin/testimoni',
+    icon: MessageSquareQuote,
+    title: 'Testimoni',
+    desc: 'Kelola testimoni pelanggan di halaman Beranda',
   },
 ]
 

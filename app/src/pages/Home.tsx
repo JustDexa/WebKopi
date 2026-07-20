@@ -1,12 +1,29 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { gsap } from 'gsap'
 import { Mountain, Users, Coffee, TrendingUp, Star, ArrowRight } from 'lucide-react'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import { supabase } from '@/lib/supabase'
+import type { Testimonial } from '@/types'
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null)
   const contentRef = useScrollAnimation()
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+
+  useEffect(() => {
+    // Testimoni diatur lewat Admin > Testimoni, bukan hardcode — supaya
+    // bisa ditambah/diubah tanpa perlu deploy ulang kode.
+    const fetchTestimonials = async () => {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('urutan_tampil', { ascending: true })
+
+      if (!error && data) setTestimonials(data)
+    }
+    fetchTestimonials()
+  }, [])
 
   useEffect(() => {
     if (heroRef.current) {
@@ -38,24 +55,6 @@ export default function Home() {
       icon: TrendingUp,
       title: 'Hilirisasi Produk',
       desc: 'Dari budidaya kebun, green bean, roasted bean, hingga produk minuman siap konsumsi melalui roastery dan cafe.',
-    },
-  ]
-
-  const testimonials = [
-    {
-      quote: 'Rasa kopinya khas, sedikit fruity dan aftertaste-nya bersih. Kirimannya juga rapi.',
-      name: 'Dimas A.',
-      role: 'Pelanggan Arabica Bukit Mangir',
-    },
-    {
-      quote: 'Suka karena tahu langsung asal kebunnya. Terasa lebih personal dibanding kopi kemasan biasa.',
-      name: 'Ratna S.',
-      role: 'Pelanggan Robusta',
-    },
-    {
-      quote: 'Proses order lewat WhatsApp gampang dan cepat direspon oleh tim.',
-      name: 'Yusuf P.',
-      role: 'Pelanggan Liberika',
     },
   ]
 
@@ -164,33 +163,40 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimoni — social proof (fixes audit D2) */}
-        <section className="bg-background py-28">
-          <div className="container-brand">
-            <div className="mx-auto max-w-[640px] text-center">
-              <p className="text-caption text-accent">Kata Mereka</p>
-              <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
-                Dipercaya Penikmat Kopi
-              </h2>
-            </div>
-            <div data-animate="staggerFadeUp" className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {testimonials.map((t, i) => (
-                <div key={i} className="rounded-3xl border border-border bg-card p-8 shadow-soft">
-                  <div className="flex gap-1 text-gold">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} size={14} fill="currentColor" strokeWidth={0} />
-                    ))}
+        {/* Testimoni — social proof (fixes audit D2), diatur lewat Admin > Testimoni */}
+        {testimonials.length > 0 && (
+          <section className="bg-background py-28">
+            <div className="container-brand">
+              <div className="mx-auto max-w-[640px] text-center">
+                <p className="text-caption text-accent">Kata Mereka</p>
+                <h2 className="mt-4 font-serif text-heading-1 font-bold text-primary">
+                  Dipercaya Penikmat Kopi
+                </h2>
+              </div>
+              <div data-animate="staggerFadeUp" className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+                {testimonials.map((t) => (
+                  <div key={t.id} className="rounded-3xl border border-border bg-card p-8 shadow-soft">
+                    <div className="flex gap-1 text-gold">
+                      {Array.from({ length: 5 }).map((_, j) => (
+                        <Star
+                          key={j}
+                          size={14}
+                          fill={j < t.rating ? 'currentColor' : 'none'}
+                          strokeWidth={j < t.rating ? 0 : 1.5}
+                        />
+                      ))}
+                    </div>
+                    <p className="mt-5 text-body leading-relaxed text-foreground/85">&ldquo;{t.quote}&rdquo;</p>
+                    <div className="mt-6 border-t border-border pt-4">
+                      <p className="text-[14px] font-semibold text-primary">{t.name}</p>
+                      {t.role && <p className="text-small text-muted-foreground">{t.role}</p>}
+                    </div>
                   </div>
-                  <p className="mt-5 text-body leading-relaxed text-foreground/85">&ldquo;{t.quote}&rdquo;</p>
-                  <div className="mt-6 border-t border-border pt-4">
-                    <p className="text-[14px] font-semibold text-primary">{t.name}</p>
-                    <p className="text-small text-muted-foreground">{t.role}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* CTA Section */}
         <section

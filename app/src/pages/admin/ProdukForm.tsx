@@ -9,6 +9,11 @@ interface VariantInput {
   stock: string
 }
 
+interface ProcessStepInput {
+  title: string
+  description: string
+}
+
 export default function ProdukForm() {
   const navigate = useNavigate()
   const [name, setName] = useState('')
@@ -18,6 +23,7 @@ export default function ProdukForm() {
   const [variants, setVariants] = useState<VariantInput[]>([
     { size: '', price: '', stock: '' },
   ])
+  const [processSteps, setProcessSteps] = useState<ProcessStepInput[]>([])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -33,6 +39,20 @@ export default function ProdukForm() {
     const updated = [...variants]
     updated[index][field] = value
     setVariants(updated)
+  }
+
+  const addStepRow = () => {
+    setProcessSteps([...processSteps, { title: '', description: '' }])
+  }
+
+  const removeStepRow = (index: number) => {
+    setProcessSteps(processSteps.filter((_, i) => i !== index))
+  }
+
+  const updateStep = (index: number, field: keyof ProcessStepInput, value: string) => {
+    const updated = [...processSteps]
+    updated[index][field] = value
+    setProcessSteps(updated)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,9 +78,11 @@ export default function ProdukForm() {
       }
 
       // 2. Insert produk, ambil ID yang baru dibuat
+      const stepsToInsert = processSteps.filter((s) => s.title.trim() && s.description.trim())
+
       const { data: productData, error: productError } = await supabase
         .from('products')
-        .insert({ name, description, category, image_url: imageUrl })
+        .insert({ name, description, category, image_url: imageUrl, process_steps: stepsToInsert })
         .select()
         .single()
 
@@ -247,6 +269,67 @@ export default function ProdukForm() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
                 </svg>
                 Tambah Varian Lain
+              </button>
+            </div>
+          </div>
+
+          {/* Section 3: Langkah Pengolahan */}
+          <div className="pt-4 border-t border-[#F0EAE1]">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <label className="block text-[16px] font-bold text-[#3A261D]">Langkah Pengolahan</label>
+                <p className="text-sm text-[#7A6A5E]">
+                  Ditampilkan di panel Detail Produk saat pelanggan klik produk ini. Boleh dikosongkan.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#F7F3EE]/50 p-6 rounded-2xl border border-[#E1D7CE]/50 space-y-4">
+              {processSteps.length === 0 && (
+                <p className="text-sm text-[#A99A8E] italic">Belum ada langkah. Klik "Tambah Langkah" di bawah.</p>
+              )}
+              {processSteps.map((s, i) => (
+                <div key={i} className="flex flex-col sm:flex-row gap-4 items-start bg-white p-4 rounded-xl border border-[#F0EAE1] shadow-sm">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#3A261D] text-white text-sm font-bold mt-1">
+                    {i + 1}
+                  </div>
+                  <div className="w-full sm:flex-1 space-y-3">
+                    <input
+                      placeholder="Judul langkah, contoh: Sortasi & Pulping"
+                      value={s.title}
+                      onChange={(e) => updateStep(i, 'title', e.target.value)}
+                      className={inputClass}
+                    />
+                    <textarea
+                      placeholder="Deskripsi singkat langkah ini"
+                      value={s.description}
+                      onChange={(e) => updateStep(i, 'description', e.target.value)}
+                      rows={2}
+                      className={inputClass}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeStepRow(i)}
+                    className="w-full sm:w-auto p-3 flex justify-center items-center text-red-500 bg-red-50 hover:bg-red-500 hover:text-white rounded-xl transition-all"
+                    title="Hapus Langkah"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addStepRow}
+                className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-[#4A7C59] hover:text-[#3A261D] bg-white px-5 py-2.5 rounded-xl border border-[#E1D7CE] hover:border-[#4A7C59] transition-all shadow-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                </svg>
+                Tambah Langkah
               </button>
             </div>
           </div>
