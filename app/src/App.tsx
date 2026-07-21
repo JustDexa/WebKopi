@@ -20,7 +20,6 @@ import GaleriAdmin from './pages/admin/GaleriAdmin'
 import KebunGaleriAdmin from './pages/admin/KebunGaleriAdmin'
 import TestimoniAdmin from './pages/admin/TestimoniAdmin'
 
-
 export default function App() {
   return (
     <Routes>

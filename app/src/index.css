@@ -98,10 +98,7 @@
   }
 }
 
-/* Scroll-reveal system — driven by IntersectionObserver (useScrollAnimation),
-   not by pre-computed pixel offsets. This means it self-corrects on any
-   layout shift (image loads, font swaps, async content) with no manual
-   refresh logic needed, unlike position-caching scroll libraries. */
+/* Scroll-reveal system, dipakai bareng useScrollAnimation */
 [data-animate] {
   opacity: 0;
 }

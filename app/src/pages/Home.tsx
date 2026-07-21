@@ -161,7 +161,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimoni — social proof (fixes audit D2), diatur lewat Admin > Testimoni */}
+        {/* Testimoni */}
         {testimonials.length > 0 && (
           <section className="bg-background py-28">
             <div className="container-brand">

@@ -90,7 +90,7 @@ export default function ProdukForm() {
 
       // 3. Insert semua varian, pakai product_id dari langkah 2
       const variantsToInsert = variants
-        .filter((v) => v.size && v.price)
+        .filter((v) => v.size && v.price) // buang baris kosong
         .map((v) => ({
           product_id: productData.id,
           size: v.size,

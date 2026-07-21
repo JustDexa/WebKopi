@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router'
 import { ArrowLeft } from 'lucide-react'
 
 interface BackButtonProps {
+  // Tujuan pasti, biar tidak ikut riwayat browser
   to?: string
 }
 

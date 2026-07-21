@@ -71,8 +71,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Kontak — social icons removed since they had no real destination (fixes audit B3);
-            replaced with actionable, working contact channels instead. */}
+        {/* Kontak Kami */}
         <div>
           <h4 className="text-caption text-primary-foreground/45">Kontak Kami</h4>
           <div className="mt-5 space-y-3.5">

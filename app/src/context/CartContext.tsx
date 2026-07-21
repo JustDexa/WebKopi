@@ -39,12 +39,12 @@ function loadInitialItems(): CartItem[] {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(loadInitialItems)
 
-  // Sinkronkan ke localStorage setiap kali cart berubah
+  // Sinkronkan cart ke localStorage biar tidak hilang saat pindah tab
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
     } catch {
-      // localStorage bisa saja penuh/diblokir — cart tetap jalan di memory
+      // localStorage penuh/diblokir — cart tetap jalan di memory
     }
   }, [items])
 

@@ -37,7 +37,6 @@ export default function Navigation() {
     setMobileOpen(false)
   }, [location.pathname])
 
-
   useEffect(() => {
     if (totalItems === 0) return
     setBump(true)
@@ -88,7 +87,7 @@ export default function Navigation() {
               </Link>
             ))}
 
-            {/* Unit Usaha dropdown — groups Roastery + Cafe (fixes audit C6) */}
+            {/* Dropdown Unit Usaha */}
             <div
               className="relative"
               onMouseEnter={() => setUnitOpen(true)}

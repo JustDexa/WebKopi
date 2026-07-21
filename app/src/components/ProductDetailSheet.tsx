@@ -140,8 +140,7 @@ export default function ProductDetailSheet({ product, onClose }: ProductDetailSh
             Tambah ke Keranjang
           </button>
 
-          {/* Process storytelling — sekarang diatur per-produk lewat Admin > Produk,
-              bukan hardcode. Section disembunyikan kalau admin belum mengisi langkahnya. */}
+          {/* Diisi lewat Admin > Produk, disembunyikan kalau belum ada langkah */}
           {product.process_steps && product.process_steps.length > 0 && (
             <div className="mt-12 border-t border-border pt-8">
               <p className="text-caption text-muted-foreground">Proses Pengolahan</p>

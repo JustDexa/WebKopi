@@ -23,6 +23,7 @@ export default function KebunForm() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
+  // Kalau mode Edit, load data existing dulu
   useEffect(() => {
     if (!isEditMode) return
 

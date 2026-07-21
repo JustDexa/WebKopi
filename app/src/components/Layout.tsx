@@ -6,6 +6,8 @@ import WhatsAppFloatingButton from './WhatsAppFloatingButton'
 
 export default function Layout() {
   const { pathname } = useLocation()
+
+  // React Router tidak reset scroll position otomatis saat pindah halaman
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])

@@ -5,7 +5,7 @@ const PROCESSED_ATTR = 'data-observed'
 const REVEALED_CLASS = 'is-revealed'
 const STAGGER_STEP_MS = 90
 
-
+// Reveal [data-animate] elements saat masuk viewport pakai IntersectionObserver
 export function useScrollAnimation() {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -43,9 +43,7 @@ export function useScrollAnimation() {
     }
     scan()
 
-    // Content that arrives after an async fetch (Produk/Kebun/Galeri, etc.)
-    // renders into the DOM after this effect already ran once — this picks
-    // those elements up and starts observing them too.
+    // Elemen yang muncul belakangan (dari fetch async) ikut ke-observe juga
     const mutationObserver = new MutationObserver(scan)
     mutationObserver.observe(container, { childList: true, subtree: true })
 

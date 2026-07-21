@@ -16,7 +16,8 @@ export default function GaleriAdmin() {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
-
+  
+  // State untuk custom alert/modal hapus
   const [deleteModalId, setDeleteModalId] = useState<string | null>(null)
 
   const fetchImages = async () => {

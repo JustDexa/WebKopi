@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import BackButton from '@/components/ui/BackButton'
 
 interface VariantInput {
-  id?: string 
+  id?: string  // ada id kalau varian lama, kosong kalau baru ditambah
   size: string
   price: string
   stock: string
