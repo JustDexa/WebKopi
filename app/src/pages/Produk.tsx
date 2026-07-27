@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero'
 import ProductDetailSheet from '../components/ProductDetailSheet'
 import { Skeleton } from '../components/ui/skeleton'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
-import { supabase } from '../lib/supabase'
+import { api } from '../lib/api'
 import { useCart } from '@/context/CartContext'
 import type { Product } from '@/types'
 
@@ -15,7 +15,7 @@ export default function Produk() {
   const [activeProduct, setActiveProduct] = useState<Product | null>(null)
 
   const { addItem } = useCart()
-  const [selectedVariant, setSelectedVariant] = useState<Record<string, string>>({})
+  const [selectedVariant, setSelectedVariant] = useState<Record<number, number>>({})
 
   const handleAddToCart = (product: Product) => {
     const variantId = selectedVariant[product.id]
@@ -42,13 +42,14 @@ export default function Produk() {
     window.scrollTo(0, 0)
 
     const fetchProducts = async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*, product_variants(*)')
-        .order('created_at', { ascending: false })
-
-      if (!error && data) setProducts(data)
-      setLoading(false)
+      try {
+        const data = await api.get<Product[]>('/products')
+        setProducts(data)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchProducts()

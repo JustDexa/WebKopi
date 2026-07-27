@@ -2,9 +2,9 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 
 export interface CartItem {
   cartItemId: string
-  productId: string
+  productId: number
   productName: string
-  variantId: string
+  variantId: number
   size: string
   price: number
   quantity: number

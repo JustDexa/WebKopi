@@ -2,8 +2,14 @@ import { useEffect, useState } from 'react'
 import PageHero from '../components/PageHero'
 import { Skeleton } from '../components/ui/skeleton'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
-import { supabase } from '../lib/supabase'
+import { api } from '../lib/api'
 import type { KebunInfo, GalleryDisplayItem } from '@/types'
+
+interface KebunGalleryImage {
+  id: number
+  image_url: string
+  caption: string
+}
 
 export default function Kebun() {
   const contentRef = useScrollAnimation()
@@ -15,32 +21,34 @@ export default function Kebun() {
     window.scrollTo(0, 0)
 
     const fetchData = async () => {
-      const [kebunRes, extraGalleryRes] = await Promise.all([
-        supabase.from('kebun_info').select('*').order('urutan_tampil', { ascending: true }),
-        supabase
-          .from('kebun_gallery_images')
-          .select('*')
-          .order('urutan_tampil', { ascending: true }),
-      ])
+      try {
+        const [kebunData, extraGalleryData] = await Promise.all([
+          api.get<KebunInfo[]>('/kebun-info'),
+          api.get<KebunGalleryImage[]>('/kebun-gallery-images'),
+        ])
 
-      if (kebunRes.data) setKebunList(kebunRes.data)
+        setKebunList(kebunData)
 
-      const fromKebun: GalleryDisplayItem[] = (kebunRes.data || [])
-        .filter((k) => k.image_url)
-        .map((k) => ({
-          id: `kebun-${k.id}`,
-          image_url: k.image_url,
-          caption: k.nama_lokasi,
+        const fromKebun: GalleryDisplayItem[] = kebunData
+          .filter((k) => k.image_url)
+          .map((k) => ({
+            id: `kebun-${k.id}`,
+            image_url: k.image_url,
+            caption: k.nama_lokasi,
+          }))
+
+        const fromExtra: GalleryDisplayItem[] = extraGalleryData.map((g) => ({
+          id: `extra-${g.id}`,
+          image_url: g.image_url,
+          caption: g.caption || 'Galeri Kebun',
         }))
 
-      const fromExtra: GalleryDisplayItem[] = (extraGalleryRes.data || []).map((g) => ({
-        id: `extra-${g.id}`,
-        image_url: g.image_url,
-        caption: g.caption || 'Galeri Kebun',
-      }))
-
-      setGalleryImages([...fromKebun, ...fromExtra])
-      setLoading(false)
+        setGalleryImages([...fromKebun, ...fromExtra])
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchData()

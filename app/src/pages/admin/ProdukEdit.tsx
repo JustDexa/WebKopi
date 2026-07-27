@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../lib/api'
 import BackButton from '@/components/ui/BackButton'
+import type { Product } from '@/types'
 
 interface VariantInput {
-  id?: string  // ada id kalau varian lama, kosong kalau baru ditambah
+  id?: number  // ada id kalau varian lama, kosong kalau baru ditambah
   size: string
   price: string
   stock: string
@@ -33,38 +34,32 @@ export default function ProdukEdit() {
   // Load data produk yang mau diedit
   useEffect(() => {
     const fetchProduct = async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*, product_variants(*)')
-        .eq('id', id)
-        .single()
+      try {
+        const data = await api.get<Product>(`/products/${id}`)
 
-      if (error || !data) {
+        setName(data.name)
+        setDescription(data.description || '')
+        setCategory(data.category || '')
+        setImageUrl(data.image_url || '')
+        setVariants(
+          data.product_variants.map((v) => ({
+            id: v.id,
+            size: v.size,
+            price: String(v.price),
+            stock: String(v.stock),
+          }))
+        )
+        setProcessSteps(
+          Array.isArray(data.process_steps)
+            ? data.process_steps.map((s) => ({ title: s.title || '', description: s.description || '' }))
+            : []
+        )
+      } catch (err) {
+        console.error(err)
         setError('Produk tidak ditemukan.')
+      } finally {
         setLoading(false)
-        return
       }
-
-      setName(data.name)
-      setDescription(data.description || '')
-      setCategory(data.category || '')
-      setImageUrl(data.image_url || '')
-      setVariants(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data.product_variants.map((v: any) => ({
-          id: v.id,
-          size: v.size,
-          price: String(v.price),
-          stock: String(v.stock),
-        }))
-      )
-      setProcessSteps(
-        Array.isArray(data.process_steps)
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data.process_steps.map((s: any) => ({ title: s.title || '', description: s.description || '' }))
-          : []
-      )
-      setLoading(false)
     }
 
     fetchProduct()
@@ -78,7 +73,7 @@ export default function ProdukEdit() {
     setVariants(variants.filter((_, i) => i !== index))
   }
 
-  const updateVariant = (index: number, field: keyof VariantInput, value: string) => {
+  const updateVariant = (index: number, field: keyof Omit<VariantInput, 'id'>, value: string) => {
     const updated = [...variants]
     updated[index][field] = value
     setVariants(updated)
@@ -107,44 +102,30 @@ export default function ProdukEdit() {
       // 1. Upload gambar baru kalau user pilih file baru (kalau nggak, pakai imageUrl lama)
       let finalImageUrl = imageUrl
       if (imageFile) {
-        const fileName = `${Date.now()}-${imageFile.name}`
-        const { error: uploadError } = await supabase.storage
-          .from('images')
-          .upload(fileName, imageFile)
-        if (uploadError) throw uploadError
-
-        const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName)
-        finalImageUrl = urlData.publicUrl
+        const { url } = await api.upload(imageFile)
+        finalImageUrl = url
       }
 
-      // 2. Update data produk
+      // 2. Update produk + variant sekaligus dalam satu request.
+      //    Backend ganti semua variant lama dengan yang dikirim di sini.
       const stepsToSave = processSteps.filter((s) => s.title.trim() && s.description.trim())
 
-      const { error: updateError } = await supabase
-        .from('products')
-        .update({ name, description, category, image_url: finalImageUrl, process_steps: stepsToSave })
-        .eq('id', id)
-      if (updateError) throw updateError
-
-      // 3. Hapus SEMUA varian lama, insert ulang yang baru
-      //    (cara paling simpel buat handle edit/tambah/hapus varian sekaligus)
-      await supabase.from('product_variants').delete().eq('product_id', id)
-
-      const variantsToInsert = variants
+      const variantsToSave = variants
         .filter((v) => v.size && v.price)
         .map((v) => ({
-          product_id: id,
           size: v.size,
           price: parseInt(v.price),
           stock: parseInt(v.stock) || 0,
         }))
 
-      if (variantsToInsert.length > 0) {
-        const { error: variantError } = await supabase
-          .from('product_variants')
-          .insert(variantsToInsert)
-        if (variantError) throw variantError
-      }
+      await api.put(`/products/${id}`, {
+        name,
+        description,
+        category,
+        image_url: finalImageUrl,
+        process_steps: stepsToSave,
+        variants: variantsToSave,
+      })
 
       navigate('/admin/produk', { replace: true })
     } catch (err) {

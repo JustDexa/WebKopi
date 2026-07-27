@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../lib/api'
 import BackButton from '@/components/ui/BackButton'
+import type { KebunInfo } from '@/types'
 
 export default function KebunForm() {
   const { id } = useParams()  // ada isinya kalau mode Edit, undefined kalau mode Tambah
@@ -28,29 +29,25 @@ export default function KebunForm() {
     if (!isEditMode) return
 
     const fetchKebun = async () => {
-      const { data, error } = await supabase
-        .from('kebun_info')
-        .select('*')
-        .eq('id', id)
-        .single()
+      try {
+        const data = await api.get<KebunInfo>(`/kebun-info/${id}`)
 
-      if (error || !data) {
+        setNamaLokasi(data.nama_lokasi)
+        setTitle(data.title)
+        setDescription1(data.description_1 || '')
+        setDescription2(data.description_2 || '')
+        setLuasLahan(data.luas_lahan || '')
+        setJenisKopiCount(String(data.jenis_kopi_count || ''))
+        setMasaBudidaya(data.masa_budidaya || '')
+        setDescriptionBawah(data.description_bawah || '')
+        setImageUrl(data.image_url || '')
+        setUrutanTampil(String(data.urutan_tampil || 0))
+      } catch (err) {
+        console.error(err)
         setError('Data kebun tidak ditemukan.')
+      } finally {
         setLoading(false)
-        return
       }
-
-      setNamaLokasi(data.nama_lokasi)
-      setTitle(data.title)
-      setDescription1(data.description_1 || '')
-      setDescription2(data.description_2 || '')
-      setLuasLahan(data.luas_lahan || '')
-      setJenisKopiCount(String(data.jenis_kopi_count || ''))
-      setMasaBudidaya(data.masa_budidaya || '')
-      setDescriptionBawah(data.description_bawah || '')
-      setImageUrl(data.image_url || '')
-      setUrutanTampil(String(data.urutan_tampil || 0))
-      setLoading(false)
     }
 
     fetchKebun()
@@ -65,16 +62,8 @@ export default function KebunForm() {
       // Upload gambar baru kalau ada
       let finalImageUrl = imageUrl
       if (imageFile) {
-        // Membersihkan nama file dari karakter aneh untuk menghindari error Vercel/Supabase
-        const cleanFileName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '')
-        const fileName = `${Date.now()}-${cleanFileName}`
-        const { error: uploadError } = await supabase.storage
-          .from('images')
-          .upload(fileName, imageFile)
-        if (uploadError) throw uploadError
-
-        const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName)
-        finalImageUrl = urlData.publicUrl
+        const { url } = await api.upload(imageFile)
+        finalImageUrl = url
       }
 
       const payload = {
@@ -91,16 +80,9 @@ export default function KebunForm() {
       }
 
       if (isEditMode) {
-        const { error: updateError } = await supabase
-          .from('kebun_info')
-          .update(payload)
-          .eq('id', id)
-        if (updateError) throw updateError
+        await api.put(`/kebun-info/${id}`, payload)
       } else {
-        const { error: insertError } = await supabase
-          .from('kebun_info')
-          .insert(payload)
-        if (insertError) throw insertError
+        await api.post('/kebun-info', payload)
       }
 
       navigate('/admin/kebun', { replace: true })

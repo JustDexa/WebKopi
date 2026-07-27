@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../lib/api'
 import BackButton from '@/components/ui/BackButton'
 
 interface Variant {
-  id: string
+  id: number
   size: string
   price: number
   stock: number
 }
 
 interface Product {
-  id: string
+  id: number
   name: string
   description: string
   category: string
@@ -24,17 +24,18 @@ export default function ProdukAdmin() {
   const [loading, setLoading] = useState(true)
   
   // State untuk custom alert/modal hapus
-  const [deleteModalId, setDeleteModalId] = useState<string | null>(null)
+  const [deleteModalId, setDeleteModalId] = useState<number | null>(null)
 
   const fetchProducts = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('products')
-      .select('*, product_variants(*)')
-      .order('created_at', { ascending: false })
-
-    if (!error && data) setProducts(data)
-    setLoading(false)
+    try {
+      const data = await api.get<Product[]>('/products')
+      setProducts(data)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -47,7 +48,11 @@ export default function ProdukAdmin() {
 
   const executeDelete = async () => {
     if (!deleteModalId) return
-    await supabase.from('products').delete().eq('id', deleteModalId)
+    try {
+      await api.delete(`/products/${deleteModalId}`)
+    } catch (err) {
+      console.error(err)
+    }
     setDeleteModalId(null)
     fetchProducts() // refresh list
   }

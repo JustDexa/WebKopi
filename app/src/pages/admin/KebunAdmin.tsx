@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../lib/api'
 import BackButton from '@/components/ui/BackButton'
 
 interface Kebun {
-  id: string
+  id: number
   nama_lokasi: string
   title: string
   luas_lahan: string
@@ -18,17 +18,18 @@ export default function KebunAdmin() {
   const [loading, setLoading] = useState(true)
   
   // State untuk custom alert/modal hapus
-  const [deleteModalId, setDeleteModalId] = useState<string | null>(null)
+  const [deleteModalId, setDeleteModalId] = useState<number | null>(null)
 
   const fetchKebun = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('kebun_info')
-      .select('*')
-      .order('urutan_tampil', { ascending: true })
-
-    if (!error && data) setKebunList(data)
-    setLoading(false)
+    try {
+      const data = await api.get<Kebun[]>('/kebun-info')
+      setKebunList(data)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -41,7 +42,11 @@ export default function KebunAdmin() {
 
   const executeDelete = async () => {
     if (!deleteModalId) return
-    await supabase.from('kebun_info').delete().eq('id', deleteModalId)
+    try {
+      await api.delete(`/kebun-info/${deleteModalId}`)
+    } catch (err) {
+      console.error(err)
+    }
     setDeleteModalId(null)
     fetchKebun()
   }

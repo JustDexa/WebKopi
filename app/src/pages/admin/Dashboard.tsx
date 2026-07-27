@@ -36,7 +36,7 @@ const menuItems = [
 ]
 
 export default function AdminDashboard() {
-  const { signOut, session } = useAuth()
+  const { signOut, user } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
             Selamat Datang
           </h2>
           <p className="text-[15px] text-[#6B5B4F] mt-1">
-            {session?.user?.email || 'Admin'} — kelola konten website dari sini.
+            {user?.email || 'Admin'} — kelola konten website dari sini.
           </p>
         </div>
 

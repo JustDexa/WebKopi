@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../lib/api'
 import BackButton from '@/components/ui/BackButton'
 import type { Testimonial } from '@/types'
 
@@ -9,20 +9,21 @@ export default function TestimoniAdmin() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState(emptyForm)
-  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [deleteModalId, setDeleteModalId] = useState<string | null>(null)
+  const [deleteModalId, setDeleteModalId] = useState<number | null>(null)
 
   const fetchTestimonials = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('testimonials')
-      .select('*')
-      .order('urutan_tampil', { ascending: true })
-
-    if (!error && data) setTestimonials(data)
-    setLoading(false)
+    try {
+      const data = await api.get<Testimonial[]>('/testimonials')
+      setTestimonials(data)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -48,25 +49,20 @@ export default function TestimoniAdmin() {
 
     try {
       if (editingId) {
-        const { error: updateError } = await supabase
-          .from('testimonials')
-          .update({
-            name: form.name,
-            role: form.role,
-            quote: form.quote,
-            rating: parseInt(form.rating) || 5,
-          })
-          .eq('id', editingId)
-        if (updateError) throw updateError
+        await api.put(`/testimonials/${editingId}`, {
+          name: form.name,
+          role: form.role,
+          quote: form.quote,
+          rating: parseInt(form.rating) || 5,
+        })
       } else {
-        const { error: insertError } = await supabase.from('testimonials').insert({
+        await api.post('/testimonials', {
           name: form.name,
           role: form.role,
           quote: form.quote,
           rating: parseInt(form.rating) || 5,
           urutan_tampil: testimonials.length,
         })
-        if (insertError) throw insertError
       }
 
       cancelEdit()
@@ -81,7 +77,11 @@ export default function TestimoniAdmin() {
 
   const executeDelete = async () => {
     if (!deleteModalId) return
-    await supabase.from('testimonials').delete().eq('id', deleteModalId)
+    try {
+      await api.delete(`/testimonials/${deleteModalId}`)
+    } catch (err) {
+      console.error(err)
+    }
     setDeleteModalId(null)
     if (editingId === deleteModalId) cancelEdit()
     fetchTestimonials()

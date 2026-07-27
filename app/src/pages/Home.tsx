@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { gsap } from 'gsap'
 import { Mountain, Users, Coffee, TrendingUp, Star, ArrowRight } from 'lucide-react'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
-import { supabase } from '@/lib/supabase'
+import { api } from '@/lib/api'
 import type { Testimonial } from '@/types'
 
 export default function Home() {
@@ -13,12 +13,12 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTestimonials = async () => {
-      const { data, error } = await supabase
-        .from('testimonials')
-        .select('*')
-        .order('urutan_tampil', { ascending: true })
-
-      if (!error && data) setTestimonials(data)
+      try {
+        const data = await api.get<Testimonial[]>('/testimonials')
+        setTestimonials(data)
+      } catch (err) {
+        console.error(err)
+      }
     }
     fetchTestimonials()
   }, [])

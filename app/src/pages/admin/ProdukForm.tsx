@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../lib/api'
 import BackButton from '@/components/ui/BackButton'
 
 interface VariantInput {
@@ -64,45 +64,30 @@ export default function ProdukForm() {
       // 1. Upload gambar dulu (kalau ada)
       let imageUrl = ''
       if (imageFile) {
-        // Membersihkan nama file dari karakter aneh
-        const cleanFileName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '')
-        const fileName = `${Date.now()}-${cleanFileName}`
-        const { error: uploadError } = await supabase.storage
-          .from('images')
-          .upload(fileName, imageFile)
-
-        if (uploadError) throw uploadError
-
-        const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName)
-        imageUrl = urlData.publicUrl
+        const { url } = await api.upload(imageFile)
+        imageUrl = url
       }
 
-      // 2. Insert produk, ambil ID yang baru dibuat
+      // 2. Kirim produk + semua variant sekaligus dalam satu request
+      //    (backend Laravel yang urus insert product_variants-nya)
       const stepsToInsert = processSteps.filter((s) => s.title.trim() && s.description.trim())
 
-      const { data: productData, error: productError } = await supabase
-        .from('products')
-        .insert({ name, description, category, image_url: imageUrl, process_steps: stepsToInsert })
-        .select()
-        .single()
-
-      if (productError) throw productError
-
-      // 3. Insert semua varian, pakai product_id dari langkah 2
       const variantsToInsert = variants
         .filter((v) => v.size && v.price) // buang baris kosong
         .map((v) => ({
-          product_id: productData.id,
           size: v.size,
           price: parseInt(v.price),
           stock: parseInt(v.stock) || 0,
         }))
 
-      const { error: variantError } = await supabase
-        .from('product_variants')
-        .insert(variantsToInsert)
-
-      if (variantError) throw variantError
+      await api.post('/products', {
+        name,
+        description,
+        category,
+        image_url: imageUrl,
+        process_steps: stepsToInsert,
+        variants: variantsToInsert,
+      })
 
       navigate('/admin/produk', { replace: true })
     } catch (err) {

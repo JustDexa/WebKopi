@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { supabase } from '../../lib/supabase'
+import { useAuth } from '../../context/AuthContext'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -8,19 +8,20 @@ export default function AdminLogin() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-    if (error) {
-      setError('Email atau password salah.')
-      setLoading(false)
-    } else {
+    try {
+      await login(email, password)
       navigate('/admin/dashboard')
+    } catch {
+      setError('Email atau password salah.')
+    } finally {
+      setLoading(false)
     }
   }
 

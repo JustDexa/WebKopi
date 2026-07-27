@@ -11,12 +11,12 @@ interface ProductDetailSheetProps {
 
 export default function ProductDetailSheet({ product, onClose }: ProductDetailSheetProps) {
   const { addItem } = useCart()
-  const [variantId, setVariantId] = useState<string>('')
+  const [variantId, setVariantId] = useState<number | null>(null)
   const [qty, setQty] = useState(1)
 
   useEffect(() => {
     if (product) {
-      setVariantId('')
+      setVariantId(null)
       setQty(1)
     }
   }, [product])

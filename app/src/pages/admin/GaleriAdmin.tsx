@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../lib/api'
 import BackButton from '@/components/ui/BackButton'
 
 interface GalleryImage {
-  id: string
+  id: number
   image_url: string
   caption: string
   urutan_tampil: number
@@ -18,17 +18,18 @@ export default function GaleriAdmin() {
   const [error, setError] = useState('')
   
   // State untuk custom alert/modal hapus
-  const [deleteModalId, setDeleteModalId] = useState<string | null>(null)
+  const [deleteModalId, setDeleteModalId] = useState<number | null>(null)
 
   const fetchImages = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('gallery_images')
-      .select('*')
-      .order('urutan_tampil', { ascending: true })
-
-    if (!error && data) setImages(data)
-    setLoading(false)
+    try {
+      const data = await api.get<GalleryImage[]>('/gallery-images')
+      setImages(data)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -49,20 +50,13 @@ export default function GaleriAdmin() {
     setError('')
 
     try {
-      const fileName = `${Date.now()}-${imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(fileName, imageFile)
-      if (uploadError) throw uploadError
+      const { url } = await api.upload(imageFile)
 
-      const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName)
-
-      const { error: insertError } = await supabase.from('gallery_images').insert({
-        image_url: urlData.publicUrl,
+      await api.post('/gallery-images', {
+        image_url: url,
         caption,
         urutan_tampil: images.length,
       })
-      if (insertError) throw insertError
 
       setCaption('')
       setImageFile(null)
@@ -77,8 +71,12 @@ export default function GaleriAdmin() {
 
   const executeDelete = async () => {
     if (!deleteModalId) return
-    
-    await supabase.from('gallery_images').delete().eq('id', deleteModalId)
+
+    try {
+      await api.delete(`/gallery-images/${deleteModalId}`)
+    } catch (err) {
+      console.error(err)
+    }
     setDeleteModalId(null) // Tutup modal
     fetchImages() // Refresh data
   }

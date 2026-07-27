@@ -1,5 +1,5 @@
 export interface Variant {
-  id: string
+  id: number
   size: string
   price: number
   stock: number
@@ -11,7 +11,7 @@ export interface ProcessStep {
 }
 
 export interface Product {
-  id: string
+  id: number
   name: string
   description: string
   category: string
@@ -21,7 +21,7 @@ export interface Product {
 }
 
 export interface Testimonial {
-  id: string
+  id: number
   name: string
   role: string
   quote: string
@@ -30,7 +30,7 @@ export interface Testimonial {
 }
 
 export interface KebunInfo {
-  id: string
+  id: number
   nama_lokasi: string
   title: string
   description_1: string

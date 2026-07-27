@@ -3,8 +3,14 @@ import { X } from 'lucide-react'
 import PageHero from '../components/PageHero'
 import { Skeleton } from '../components/ui/skeleton'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
-import { supabase } from '../lib/supabase'
-import type { GalleryDisplayItem } from '@/types'
+import { api } from '../lib/api'
+import type { GalleryDisplayItem, Product, KebunInfo } from '@/types'
+
+interface GalleryImage {
+  id: number
+  image_url: string
+  caption: string
+}
 
 export default function Galeri() {
   const [lightbox, setLightbox] = useState<string | null>(null)
@@ -16,36 +22,41 @@ export default function Galeri() {
     window.scrollTo(0, 0)
 
     const fetchAllImages = async () => {
-      const [productsRes, kebunRes, galleryRes] = await Promise.all([
-        supabase.from('products').select('id, name, image_url'),
-        supabase.from('kebun_info').select('id, nama_lokasi, image_url'),
-        supabase.from('gallery_images').select('id, image_url, caption, urutan_tampil').order('urutan_tampil', { ascending: true }),
-      ])
+      try {
+        const [productsData, kebunData, galleryData] = await Promise.all([
+          api.get<Product[]>('/products'),
+          api.get<KebunInfo[]>('/kebun-info'),
+          api.get<GalleryImage[]>('/gallery-images'),
+        ])
 
-      const fromProducts: GalleryDisplayItem[] = (productsRes.data || [])
-        .filter((p) => p.image_url)
-        .map((p) => ({
-          id: `product-${p.id}`,
-          image_url: p.image_url,
-          caption: p.name,
+        const fromProducts: GalleryDisplayItem[] = productsData
+          .filter((p) => p.image_url)
+          .map((p) => ({
+            id: `product-${p.id}`,
+            image_url: p.image_url,
+            caption: p.name,
+          }))
+
+        const fromKebun: GalleryDisplayItem[] = kebunData
+          .filter((k) => k.image_url)
+          .map((k) => ({
+            id: `kebun-${k.id}`,
+            image_url: k.image_url,
+            caption: k.nama_lokasi,
+          }))
+
+        const fromGallery: GalleryDisplayItem[] = galleryData.map((g) => ({
+          id: `gallery-${g.id}`,
+          image_url: g.image_url,
+          caption: g.caption || '',
         }))
 
-      const fromKebun: GalleryDisplayItem[] = (kebunRes.data || [])
-        .filter((k) => k.image_url)
-        .map((k) => ({
-          id: `kebun-${k.id}`,
-          image_url: k.image_url,
-          caption: k.nama_lokasi,
-        }))
-
-      const fromGallery: GalleryDisplayItem[] = (galleryRes.data || []).map((g) => ({
-        id: `gallery-${g.id}`,
-        image_url: g.image_url,
-        caption: g.caption || '',
-      }))
-
-      setImages([...fromGallery, ...fromKebun, ...fromProducts])
-      setLoading(false)
+        setImages([...fromGallery, ...fromKebun, ...fromProducts])
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchAllImages()
